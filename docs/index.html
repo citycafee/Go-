@@ -264,32 +264,49 @@
 
 <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="loginModal"><div class="modal-card">
-<button class="modal-close" onclick="closeLoginModal()">&times;</button>
-<div class="modal-header"><div class="modal-icon"><i class="fas fa-bus"></i></div><h2>Gal</h2><p>Enter your details</p></div>
+<button class="modal-close" onclick="closeLoginModal()" id="modalCloseBtn">&times;</button>
+<div class="modal-header"><div class="modal-icon"><i class="fas fa-bus"></i></div><h2>Welcome to Somaliland Express</h2><p>Please sign in to continue booking</p></div>
 <form id="loginForm" onsubmit="doLogin(event)">
-<div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="loginName" placeholder="Your full name" required></div>
+<div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="loginName" placeholder="Enter your full name" required></div>
 <div class="form-group"><label><i class="fab fa-whatsapp"></i> WhatsApp Number</label><input type="tel" id="loginWhatsApp" placeholder="e.g. 61 1234567" required></div>
-<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Login / Register</button>
+<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Sign In</button>
 </form>
 </div></div>
 
 <script src="static/js/app.js"></script>
 <script>
 function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});var el=document.getElementById('page-'+id);if(el)el.classList.add('active');window.scrollTo(0,0)}
-function router(){var h=location.hash.replace('#','').split('?')[0]||'home';var page=h.split('?')[0];showPage(page);checkLogin();
-if(page==='home')loadCities();
-else if(page==='buses')loadBuses();
-else if(page==='seats'){bookingState.selectedSeats=[];loadSeats()}
-else if(page==='payment')loadPaymentPage();
-else if(page==='confirmation')loadConfirmation();
-else if(page==='profile')loadProfile();
-else if(page==='bookings')loadMyBookings();
-else if(page==='taxi-confirm')loadTaxiConfirmation();
-else if(page==='delivery-confirm')loadDeliveryConfirmation();
-else if(page==='verify')loadVerify();
+function requireLogin(callback){
+  var u=getUser();
+  if(!u){localStorage.setItem('se_login_redirect',callback||'home');openLoginModal();return false}
+  return true;
+}
+function router(){
+  var h=location.hash.replace('#','').split('?')[0]||'home';
+  var page=h.split('?')[0];
+  var publicPages=['home','verify'];
+  if(publicPages.indexOf(page)===-1&&!getUser()){
+    localStorage.setItem('se_login_redirect',h);openLoginModal();showPage('home');loadCities();return;
+  }
+  showPage(page);checkLogin();
+  if(page==='home')loadCities();
+  else if(page==='buses')loadBuses();
+  else if(page==='seats'){bookingState.selectedSeats=[];loadSeats()}
+  else if(page==='payment')loadPaymentPage();
+  else if(page==='confirmation')loadConfirmation();
+  else if(page==='profile')loadProfile();
+  else if(page==='bookings')loadMyBookings();
+  else if(page==='taxi-confirm')loadTaxiConfirmation();
+  else if(page==='delivery-confirm')loadDeliveryConfirmation();
+  else if(page==='verify')loadVerify();
 }
 window.addEventListener('hashchange',router);
-window.addEventListener('load',function(){if(!location.hash)location.hash='home';router();checkLogin()});
+window.addEventListener('load',function(){
+  if(!location.hash)location.hash='home';
+  var u=getUser();
+  if(!u){openLoginModal()}
+  router();checkLogin();
+});
 </script>
 </body>
 </html>

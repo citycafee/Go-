@@ -21,7 +21,7 @@ function getParam(k){return new URLSearchParams(window.location.search).get(k)}
 function go(hash){window.location.hash=hash}
 function checkLogin(){var u=getUser();document.querySelectorAll('.user-info').forEach(function(el){el.style.display=u?'flex':'none'});document.querySelectorAll('#loginTrigger').forEach(function(el){el.style.display=u?'none':'block'});document.querySelectorAll('#userName').forEach(function(el){if(u)el.textContent=u.full_name})}
 function openLoginModal(){document.getElementById('loginModal').classList.add('active')}
-function closeLoginModal(){document.getElementById('loginModal').classList.remove('active')}
+function closeLoginModal(){var u=getUser();if(u)document.getElementById('loginModal').classList.remove('active')}
 
 function doLogin(e){
   e.preventDefault();
