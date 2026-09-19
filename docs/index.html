@@ -307,6 +307,29 @@ body.profile-active .navbar{display:none!important}
 </div></div>
 </div>
 
+<!-- SEAT SELECTION MODAL -->
+<div class="modal-overlay seat-modal" id="seatModal">
+<div class="modal-card seat-modal-card">
+<button class="modal-close" onclick="closeSeatModal()">&times;</button>
+<div class="seat-modal-header">
+<div class="seat-modal-bus-info">
+<div class="seat-modal-bus-icon"><i class="fas fa-bus"></i></div>
+<div><h3 id="modalBusRoute">-</h3><p id="modalBusDetails">-</p></div>
+</div>
+</div>
+<div class="seat-modal-body">
+<div class="van-header"><div class="van-front-label"><i class="fas fa-wind"></i><span>FRONT OF VAN</span></div></div>
+<div class="van-seats-grid" id="modalSeatsGrid"></div>
+<div class="seats-summary" id="modalSeatsSummary"></div>
+<div class="seat-legend"><div class="legend-item"><span class="seat-box available"></span> Available</div><div class="legend-item"><span class="seat-box selected"></span> Selected</div><div class="legend-item"><span class="seat-box taken"></span> Taken</div></div>
+</div>
+<div class="seat-modal-footer" id="seatModalFooter" style="display:none">
+<div class="seat-modal-total"><span>Total:</span><strong id="modalTotalFare">$0</strong></div>
+<button class="btn btn-primary btn-lg" onclick="modalProceedToPayment()"><i class="fas fa-credit-card"></i> Proceed to Payment</button>
+</div>
+</div>
+</div>
+
 <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="loginModal"><div class="modal-card">
 <button class="modal-close" onclick="closeLoginModal()" id="modalCloseBtn">&times;</button>
@@ -345,13 +368,14 @@ function router(){
   else if(page==='delivery-confirm')loadDeliveryConfirmation();
   else if(page==='verify')loadVerify();
 }
-window.addEventListener('hashchange',router);
+window.addEventListener('hashchange',function(){closeSeatModal();router()});
 window.addEventListener('load',function(){
   if(!location.hash)location.hash='home';
   var u=getUser();
   if(!u){openLoginModal()}
   router();checkLogin();
 });
+document.getElementById('seatModal').addEventListener('click',function(e){if(e.target===this)closeSeatModal()});
 </script>
 </body>
 </html>

@@ -75,7 +75,17 @@ function loadBuses(){
   }).join('');
 }
 
-function selectBus(busId){go('seats?bus_id='+busId+'&date='+bookingState.date)}
+function selectBus(busId){
+  var bus=DB_BUSES.find(function(b){return b.id===busId});
+  if(!bus)return;
+  var r=getRoute(bus.route_id);
+  bookingState.bus=bus;bookingState.bus_id=busId;bookingState.selectedSeats=[];
+  document.getElementById('modalBusRoute').textContent=r.origin+' \u2192 '+r.destination;
+  document.getElementById('modalBusDetails').textContent=bus.bus_number+' | '+bus.departure_time+' - '+bus.arrival_time+' | $'+bus.fare+'/seat';
+  loadModalSeats(busId,bookingState.date);
+  document.getElementById('seatModal').classList.add('active');
+  document.body.style.overflow='hidden';
+}
 
 function loadSeats(){
   var busId=parseInt(getParam('bus_id')),date=getParam('date');
@@ -196,6 +206,57 @@ function generateQR(elemId,text,color){
     if(rand()>0.5)ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize);
   }
   el.src=c.toDataURL();
+}
+
+function loadModalSeats(busId,date){
+  var bus=DB_BUSES.find(function(b){return b.id===busId});
+  if(!bus)return;
+  var allBookings=getBookings();
+  var taken={};
+  allBookings.filter(function(x){return x.bus_id===busId&&x.date===date&&x.status==='confirmed'}).forEach(function(x){x.seats.split(',').forEach(function(s){taken[s.trim()]=true})});
+  var grid=document.getElementById('modalSeatsGrid');
+  function sH(n){
+    var t=taken[String(n)];
+    return '<div class="van-seat '+(t?'taken':'available')+'" data-seat="'+n+'" onclick="modalToggleSeat(this,'+n+')"><i class="fas '+(t?'fa-times':'fa-user')+'"></i><span class="seat-num">'+n+'</span></div>';
+  }
+  var h='<div class="van-seat-row row-a"><div class="van-seat driver-seat"><i class="fas fa-steering-wheel"></i><span>DRIVER</span></div><div></div>'+sH(1)+'</div><div class="van-separator"></div>';
+  h+='<div class="van-seat-row row-b"><div class="van-seat aisle-seat"><i class="fas fa-arrows-alt-h"></i><span>AISLE</span></div>'+sH(2)+sH(3)+'</div><div class="van-separator"></div>';
+  h+='<div class="van-seat-row row-c">'+sH(4)+sH(5)+sH(6)+'</div><div class="van-separator"></div>';
+  h+='<div class="van-seat-row row-d">'+sH(7)+sH(8)+sH(9)+'</div><div class="van-separator"></div>';
+  h+='<div class="van-seat-row row-e">'+sH(10)+sH(11)+sH(12)+'</div><div class="van-separator"></div>';
+  h+='<div class="van-seat-row row-f">'+sH(13)+sH(14)+sH(15)+'</div>';
+  h+='<div class="van-back"><i class="fas fa-suitcase-rolling"></i><span>BACK / LUGGAGE</span></div>';
+  grid.innerHTML=h;
+  var takenCount=Object.keys(taken).length,availCount=bus.total_seats-takenCount;
+  document.getElementById('modalSeatsSummary').innerHTML='<div class="summary-item booked"><i class="fas fa-times-circle"></i> '+takenCount+' booked</div><div class="summary-item available"><i class="fas fa-check-circle"></i> '+availCount+' available</div><div class="summary-item total"><i class="fas fa-chair"></i> '+bus.total_seats+' total</div>';
+  document.getElementById('seatModalFooter').style.display='none';
+}
+
+function closeSeatModal(){
+  document.getElementById('seatModal').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+function modalToggleSeat(el,num){
+  if(el.classList.contains('taken'))return;
+  if(el.classList.contains('selected')){el.classList.remove('selected');el.classList.add('available');el.querySelector('i').className='fas fa-user';bookingState.selectedSeats=bookingState.selectedSeats.filter(function(s){return s!==num})}
+  else{if(bookingState.selectedSeats.length>=5)return alert('Max 5 seats');el.classList.remove('available');el.classList.add('selected');el.querySelector('i').className='fas fa-check';bookingState.selectedSeats.push(num)}
+  updateModalSummary();
+}
+
+function updateModalSummary(){
+  var footer=document.getElementById('seatModalFooter');
+  if(!bookingState.selectedSeats.length){footer.style.display='none';return}
+  footer.style.display='flex';
+  var fare=bookingState.bus?bookingState.bus.fare*bookingState.selectedSeats.length:0;
+  document.getElementById('modalTotalFare').textContent='$'+fare;
+  bookingState.totalFare=fare;
+}
+
+function modalProceedToPayment(){
+  if(!bookingState.selectedSeats.length)return alert('Select seats first');
+  closeSeatModal();
+  go('payment?bus_id='+bookingState.bus_id+'&date='+bookingState.date+'&seats='+bookingState.selectedSeats.join(','));
 }
 
 function loadMyBookings(){
