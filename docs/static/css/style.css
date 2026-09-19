@@ -1176,117 +1176,122 @@ a, button { touch-action: manipulation; }
 .delivery-banner {
     background: linear-gradient(135deg, #1B5E20, #2E7D32) !important;
 }
-
 /* ===== RESPONSIVE - ALL DEVICES ===== */
 
-/* Extra Small Phones (320px) */
+/* iPhone/Android common */
+* { -webkit-tap-highlight-color: transparent; }
+input, select, textarea, button { font-size: 16px !important; }
+img { max-width: 100%; height: auto; }
+a, button { touch-action: manipulation; }
+
+/* Extra Small (320px) */
 @media (max-width: 320px) {
     .container { padding: 0 12px; }
-    .navbar { padding: 0 12px; height: 56px; }
-    .brand-text { font-size: 0.95rem; }
-    .brand-icon { width: 32px; height: 32px; font-size: 0.9rem; }
-    .btn-link { padding: 4px 8px; font-size: 0.75rem; }
-    .user-info { gap: 5px; }
-    .user-info span { display: none; }
-    .hero { height: 180px; }
-    .hero-content h1 { font-size: 1.1rem; }
-    .hero-content p { font-size: 0.85rem; }
-    .booking-card { padding: 20px 15px; }
-    .booking-card h2 { font-size: 1.1rem; }
-    .form-group { min-width: 100%; }
-    .route-arrow { width: 36px; height: 36px; }
-    .section-title { font-size: 1.3rem; margin-bottom: 25px; }
-    .cities-grid { grid-template-columns: 1fr; gap: 12px; }
-    .city-card { padding: 20px 15px; }
-    .features-grid { grid-template-columns: 1fr; }
-    .bus-card { padding: 15px; gap: 12px; }
-    .bus-card-image { width: 80px; height: 60px; }
-    .bus-number-top { font-size: 0.9rem; }
-    .bus-time-row { font-size: 0.75rem; gap: 5px; }
-    .bus-time-line { display: none; }
-    .bus-seats-info { flex-direction: column; gap: 5px; }
-    .bus-fare .price { font-size: 1.2rem; }
-    .van-seat { height: 50px; font-size: 0.7rem; }
-    .van-seat .seat-num { font-size: 0.75rem; }
-    .selection-summary { flex: 1; position: static; }
-    .payment-container { flex-direction: column; }
-    .booking-summary-card, .payment-method-card { flex: 1; min-width: auto; }
-    .ticket-qr-layout { flex-direction: column; align-items: center; }
-    .ticket-qr-layout .saveable-ticket { min-width: auto; width: 100%; }
-    .qr-standalone-card { width: 100%; max-width: 280px; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .stat-card { padding: 15px; gap: 10px; }
-    .stat-icon { width: 40px; height: 40px; font-size: 1rem; }
-    .stat-number { font-size: 1.1rem; }
-    .stat-label { font-size: 0.7rem; }
-    .services-grid { grid-template-columns: 1fr; }
-    .service-card { padding: 20px; }
-    .service-icon { width: 55px; height: 55px; font-size: 1.4rem; }
-    .quick-actions { grid-template-columns: 1fr; }
-    .quick-action-card { padding: 18px; }
-    .booking-card-item { padding: 15px; }
-    .booking-card-icon { width: 45px; height: 45px; font-size: 1.1rem; }
-    .booking-card-fare .amount { font-size: 1.1rem; }
-    .modal-card { padding: 25px 20px; margin: 10px; }
-    .page-content { padding: 20px 0 40px; }
-    .bus-info-bar { padding: 12px 15px; flex-direction: column; text-align: center; }
-    .bus-time-info { flex-direction: column; gap: 8px; }
-    .seat-legend { gap: 12px; }
-    .legend-item { font-size: 0.75rem; }
+    .navbar { padding: 0 10px; height: 50px; }
+    .brand-icon { width: 28px; height: 28px; font-size: 0.8rem; }
+    .brand-text { font-size: 0.85rem; }
+    .btn-link { padding: 3px 6px; font-size: 0.65rem; }
+    .hero { height: 150px; }
+    .hero-content h1 { font-size: 0.95rem; }
+    .hero-content p { font-size: 0.72rem; }
+    .booking-card { padding: 14px 10px; }
+    .booking-card h2 { font-size: 0.95rem; }
+    .form-group input, .form-group select { padding: 9px 10px; font-size: 0.85rem; }
+    .route-arrow { width: 30px; height: 30px; font-size: 0.75rem; }
+    .btn { padding: 9px 14px; font-size: 0.85rem; min-height: 42px; }
+    .section-title { font-size: 1rem; margin-bottom: 16px; }
+    .cities-grid { gap: 10px; }
+    .city-card { padding: 14px 10px; }
+    .city-icon { font-size: 1.3rem; }
+    .city-card h3 { font-size: 0.9rem; }
+    .city-card p { font-size: 0.7rem; }
+    .features-grid { gap: 8px; }
+    .feature-card { padding: 14px 8px; }
+    .feature-icon { width: 45px; height: 45px; font-size: 1.1rem; }
+    .feature-card h3 { font-size: 0.8rem; }
+    .feature-card p { font-size: 0.68rem; }
+    .bus-card { padding: 10px; gap: 8px; }
+    .bus-card-image { width: 65px; height: 50px; }
+    .bus-number-top { font-size: 0.78rem; }
+    .bus-time-row { font-size: 0.65rem; gap: 3px; }
+    .bus-seats-info { gap: 3px; }
+    .booked-seats, .available-seats { font-size: 0.6rem; padding: 2px 6px; }
+    .bus-fare .price { font-size: 1rem; }
+    .van-seat { height: 44px; }
+    .van-seat i { font-size: 0.8rem; }
+    .van-seat .seat-num { font-size: 0.68rem; }
+    .selection-summary { padding: 12px; }
+    .payment-options { gap: 6px; }
+    .option-content { padding: 10px; gap: 8px; }
+    .option-icon { width: 34px; height: 34px; font-size: 0.9rem; }
+    .option-info h4 { font-size: 0.8rem; }
+    .option-info p { font-size: 0.68rem; }
+    .summary-row { font-size: 0.8rem; padding: 8px 0; }
+    .check-circle { width: 65px; height: 65px; font-size: 1.8rem; }
+    .success-title { font-size: 1.1rem; }
+    .ticket-qr-layout { gap: 12px; }
+    .qr-standalone-card { max-width: 240px; }
+    .booking-card-item { padding: 10px; gap: 8px; }
+    .booking-card-icon { width: 36px; height: 36px; font-size: 0.9rem; }
+    .booking-card-route { font-size: 0.85rem; }
+    .booking-card-info { font-size: 0.65rem; gap: 6px; }
+    .modal-overlay { padding: 8px; }
+    .modal-card { padding: 18px 14px; }
+    .modal-icon { font-size: 1.8rem; }
+    .verify-header { padding: 18px 12px; }
+    .verify-header h1 { font-size: 1rem; }
+    .verify-details { padding: 0 12px 12px; }
+    .verify-row { padding: 8px 0; }
+    .page-content { padding: 15px 0 30px; }
+    .route-banner { padding: 14px; }
+    .bus-info-bar { padding: 10px 12px; }
 }
 
-/* Small Phones (375px - iPhone SE, 12 mini) */
+/* Small Phones (375px - iPhone SE, Galaxy S) */
 @media (min-width: 321px) and (max-width: 375px) {
+    .container { padding: 0 12px; }
+    .navbar { padding: 0 12px; height: 52px; }
+    .brand-text { font-size: 0.9rem; }
+    .hero { height: 170px; }
+    .hero-content h1 { font-size: 1.05rem; }
+    .booking-card { padding: 18px 14px; }
+    .bus-card { padding: 12px; gap: 10px; }
+    .bus-card-image { width: 75px; height: 55px; }
+}
+
+/* Medium Phones (414px - iPhone Plus, Pixel) */
+@media (min-width: 376px) and (max-width: 414px) {
     .container { padding: 0 14px; }
     .navbar { padding: 0 14px; }
-    .brand-text { font-size: 1rem; }
-    .hero { height: 200px; }
-    .hero-content h1 { font-size: 1.2rem; }
-    .booking-card { padding: 22px 16px; }
-    .bus-card { padding: 16px; }
-    .bus-card-image { width: 85px; height: 65px; }
-}
-
-/* Medium Phones (414px - iPhone Plus, Android) */
-@media (min-width: 376px) and (max-width: 414px) {
-    .container { padding: 0 16px; }
-    .navbar { padding: 0 16px; }
-    .hero { height: 220px; }
-    .hero-content h1 { font-size: 1.3rem; }
-    .booking-card { padding: 25px 18px; }
-    .bus-card { padding: 18px; gap: 15px; }
-    .bus-card-image { width: 90px; height: 70px; }
+    .hero { height: 190px; }
+    .hero-content h1 { font-size: 1.15rem; }
+    .booking-card { padding: 20px 16px; }
+    .bus-card { padding: 14px; gap: 12px; }
 }
 
 /* Large Phones (415px - 480px) */
 @media (min-width: 415px) and (max-width: 480px) {
-    .container { padding: 0 18px; }
-    .navbar { padding: 0 18px; }
-    .hero { height: 240px; }
-    .hero-content h1 { font-size: 1.4rem; }
-    .booking-card { padding: 28px 20px; }
+    .container { padding: 0 16px; }
+    .hero { height: 210px; }
+    .hero-content h1 { font-size: 1.25rem; }
+    .booking-card { padding: 22px 18px; }
 }
 
 /* Small Tablets (481px - 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
     .container { padding: 0 20px; }
-    .hero { height: 260px; }
-    .hero-content h1 { font-size: 1.6rem; }
-    .booking-card { padding: 30px 25px; }
-    .bus-card { padding: 20px; }
-    .bus-card-image { width: 100px; height: 80px; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .services-grid { grid-template-columns: 1fr; }
+    .hero { height: 240px; }
+    .hero-content h1 { font-size: 1.5rem; }
+    .booking-card { padding: 26px 22px; }
+    .bus-card { padding: 18px; }
+    .bus-card-image { width: 95px; height: 75px; }
 }
 
 /* Tablets (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
     .container { max-width: 900px; }
-    .hero { height: 280px; }
-    .hero-content h1 { font-size: 1.8rem; }
-    .stats-grid { grid-template-columns: repeat(4, 1fr); }
-    .services-grid { grid-template-columns: repeat(2, 1fr); }
-    .quick-actions { grid-template-columns: repeat(3, 1fr); }
+    .hero { height: 260px; }
+    .hero-content h1 { font-size: 1.7rem; }
 }
 
 /* Desktop (1025px+) */
@@ -1294,16 +1299,16 @@ a, button { touch-action: manipulation; }
     .container { max-width: 1100px; }
 }
 
-/* Common Mobile Styles */
+/* Common Mobile Styles - all pages */
 @media (max-width: 768px) {
-    .hero { height: 220px; }
-    .hero-content h1 { font-size: 1.3rem; }
-    .hero-content p { font-size: 0.9rem; }
+    .hero { height: 190px; }
+    .hero-content h1 { font-size: 1.15rem; }
+    .hero-content p { font-size: 0.82rem; }
     .route-selector { flex-direction: column; }
     .route-arrow { align-self: center; }
     .search-btn { width: 100%; }
     .bus-card { flex-direction: column; text-align: center; }
-    .bus-card-image { width: 100%; height: 120px; }
+    .bus-card-image { width: 100%; height: 100px; }
     .bus-time-row { justify-content: center; }
     .bus-seats-info { justify-content: center; }
     .bus-fare { text-align: center; }
@@ -1313,113 +1318,48 @@ a, button { touch-action: manipulation; }
     .booking-card-item { flex-direction: column; text-align: center; }
     .booking-card-fare { text-align: center; }
     .booking-card-info { justify-content: center; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .services-grid { grid-template-columns: 1fr; }
-    .quick-actions { grid-template-columns: 1fr; }
     .payment-container { flex-direction: column; }
     .booking-summary-card, .payment-method-card { flex: 1; min-width: auto; }
     .ticket-qr-layout { flex-direction: column; align-items: center; }
     .ticket-qr-layout .saveable-ticket { min-width: auto; width: 100%; }
-    .qr-standalone-card { width: 100%; max-width: 320px; }
-    .van-seats-grid { max-width: 100%; padding: 0 10px; }
-    .van-seat { height: 55px; min-height: 50px; }
-    .route-banner { flex-direction: column; gap: 10px; text-align: center; }
-    .bus-info-bar { flex-direction: column; text-align: center; gap: 10px; }
+    .qr-standalone-card { width: 100%; max-width: 280px; }
+    .van-seats-grid { max-width: 100%; padding: 0 8px; }
+    .van-seat { height: 50px; }
+    .route-banner { flex-direction: column; gap: 8px; text-align: center; padding: 16px; }
+    .bus-info-bar { flex-direction: column; text-align: center; gap: 8px; padding: 12px; }
     .bus-time-info { flex-wrap: wrap; justify-content: center; }
-    .confirmation-container { padding: 20px 0; }
-    .success-title { font-size: 1.5rem; }
-    .success-subtitle { font-size: 0.9rem; }
-    .save-actions { flex-direction: column; gap: 10px; }
-    .save-actions .btn { width: 100%; }
+    .confirmation-container { padding: 15px 0; }
+    .success-title { font-size: 1.3rem; }
+    .success-subtitle { font-size: 0.82rem; }
     .action-buttons { flex-direction: column; gap: 10px; }
     .action-buttons .btn { width: 100%; }
-    .no-bookings, .no-buses { padding: 40px 15px; }
-    .no-bookings i, .no-buses i { font-size: 3rem; }
-    .modal-overlay { padding: 15px; }
-    .modal-card { padding: 30px 20px; }
-    .profile-header { padding: 25px 0 20px; }
-    .profile-avatar { width: 80px; height: 80px; font-size: 2rem; }
-    .profile-header h1 { font-size: 1.4rem; }
-    .taxi-fare-display { flex-direction: column; gap: 10px; text-align: center; }
-    .van-front-label { font-size: 0.8rem; padding: 8px 18px; }
-    .van-back { font-size: 0.75rem; padding: 10px; }
-    .seats-summary { gap: 10px; padding: 10px; }
-    .seats-summary .summary-item { font-size: 0.75rem; padding: 4px 10px; }
-    .btn { min-height: 48px; padding: 12px 20px; }
-    .payment-option .option-content { padding: 15px; }
-    .option-icon { width: 44px; height: 44px; }
+    .no-bookings, .no-buses { padding: 30px 15px; }
+    .no-bookings i, .no-buses i { font-size: 2.2rem; }
+    .modal-overlay { padding: 10px; }
+    .modal-card { padding: 22px 16px; }
+    .taxi-fare-display { flex-direction: column; gap: 8px; text-align: center; padding: 14px; }
+    .van-front-label { font-size: 0.72rem; padding: 7px 14px; }
+    .van-back { font-size: 0.68rem; padding: 7px; }
+    .seats-summary { gap: 6px; padding: 6px; }
+    .seats-summary .summary-item { font-size: 0.68rem; padding: 3px 7px; }
+    .btn { min-height: 44px; padding: 10px 16px; }
+    .payment-option .option-content { padding: 12px; }
+    .option-icon { width: 40px; height: 40px; }
+    .ticket-print-grid { grid-template-columns: 1fr 1fr; }
+    .ticket-print-item { padding: 8px 6px; }
+    .ticket-print-item small { font-size: 0.6rem; }
+    .ticket-print-item strong { font-size: 0.75rem; }
+    .ticket-print-route { padding: 14px 12px; gap: 8px; }
+    .route-from, .route-to { font-size: 0.9rem; gap: 5px; }
+    .ticket-print-total { padding: 12px 16px; }
+    .ticket-print-total strong { font-size: 1.2rem; }
+    .page-content { padding-bottom: 15px; }
+    .footer { padding: 18px; margin-top: 20px; }
+    .footer p { font-size: 0.75rem; }
 }
 
-/* Verify Page */
-.verify-container { max-width: 480px; margin: 20px auto; padding: 0 15px; }
-.verify-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-.verify-header { background: linear-gradient(135deg, #1A237E, #3949AB); color: #fff; padding: 30px 20px; text-align: center; }
-.verify-header .bus-icon { font-size: 2.5rem; margin-bottom: 10px; }
-.verify-header h1 { font-size: 1.4rem; margin: 0; }
-.verify-header p { opacity: 0.8; margin-top: 5px; font-size: 0.9rem; }
-.verify-status { text-align: center; padding: 20px; }
-.verify-status.valid { color: #2E7D32; }
-.verify-status.invalid { color: #C62828; }
-.verify-status .status-icon { font-size: 3rem; margin-bottom: 10px; }
-.verify-status h2 { margin: 0 0 5px; }
-.verify-details { padding: 0 20px 20px; }
-.verify-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-.verify-row:last-child { border-bottom: none; }
-.verify-row .label { color: #666; font-size: 0.85rem; }
-.verify-row .value { font-weight: 600; text-align: right; }
-.verify-route { display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px 0; font-size: 1.1rem; font-weight: 600; }
-.verify-route i { color: #394999; }
-.verify-footer { text-align: center; padding: 15px 20px 25px; }
-.verify-footer p { font-size: 0.8rem; color: #999; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-/* ===== MOBILE APP PROFILE ===== */
-.mobile-profile { background: #f5f7fa; min-height: 100vh; padding-bottom: 70px; }
-.app-header { position: relative; overflow: hidden; }
-.app-header-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #1E88E5 100%); height: 220px; }
-.app-header-content { position: relative; z-index: 1; padding: 0 20px; }
-.app-header-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; }
-.app-header-title { color: white; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.app-header-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.profile-card-mobile { text-align: center; padding: 10px 0 30px; }
-.profile-avatar-mobile { width: 90px; height: 90px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; position: relative; }
-.profile-avatar-mobile i { font-size: 2.2rem; color: white; }
-.avatar-ring { position: absolute; inset: -4px; border: 3px solid rgba(255,255,255,0.4); border-radius: 50%; }
-.profile-name { color: white; font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
-.profile-phone { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.profile-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.2); color: white; padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-.stats-row-mobile { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 16px; margin-top: -20px; position: relative; z-index: 2; }
-.stat-item-mobile { background: white; border-radius: 12px; padding: 14px 8px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-.stat-val { font-size: 1.2rem; font-weight: 800; color: var(--dark); }
-.stat-lbl { font-size: 0.65rem; color: var(--gray); margin-top: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.stat-lbl i { font-size: 0.7rem; }
-.services-section-mobile { padding: 20px 16px 10px; }
-.section-label { font-size: 0.8rem; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-.services-grid-mobile { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.service-item-mobile { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; padding: 14px 6px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.2s; }
-.service-item-mobile:active { transform: scale(0.95); }
-.service-item-mobile span { font-size: 0.7rem; font-weight: 600; color: var(--dark); text-align: center; }
-.service-bus { width: 48px; height: 48px; background: linear-gradient(135deg, #1565C0, #42A5F5); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
-.service-taxi { width: 48px; height: 48px; background: linear-gradient(135deg, #E65100, #FF8F00); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
-.service-delivery { width: 48px; height: 48px; background: linear-gradient(135deg, #1B5E20, #4CAF50); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
-.service-bookings { width: 48px; height: 48px; background: linear-gradient(135deg, #6A1B9A, #AB47BC); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
-.menu-section-mobile { padding: 10px 16px 20px; }
-.menu-list-mobile { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.menu-item-mobile { display: flex; align-items: center; gap: 14px; padding: 15px 16px; text-decoration: none; color: var(--dark); border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.2s; }
-.menu-item-mobile:last-child { border-bottom: none; }
-.menu-item-mobile:active { background: #f5f5f5; }
-.menu-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-.menu-text { flex: 1; }
-.menu-text span { display: block; font-size: 0.9rem; font-weight: 600; }
-.menu-text small { display: block; font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
-.menu-arrow { color: #ccc; font-size: 0.7rem; }
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 12px rgba(0,0,0,0.08); z-index: 100; border-top: 1px solid #f0f0f0; }
-.bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; color: var(--gray); font-size: 0.65rem; padding: 4px 12px; transition: color 0.2s; }
-.bottom-nav-item i { font-size: 1.2rem; }
-.bottom-nav-item.active { color: var(--primary); }
-.bottom-nav-item span { font-weight: 600; }
-
-@media (min-width: 769px) {
-    .mobile-profile { max-width: 420px; margin: 0 auto; }
-    .bottom-nav { max-width: 420px; left: 50%; transform: translateX(-50%); }
+/* iPhone Safe Area */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .bottom-nav { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+    .footer { padding-bottom: calc(25px + env(safe-area-inset-bottom)); }
 }
