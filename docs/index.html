@@ -6,7 +6,10 @@
 <title>Somaliland Express</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="static/css/style.css">
-<style>.page{display:none}.page.active{display:block}</style>
+<style>.page{display:none}.page.active{display:block}
+#page-profile.active ~ .navbar,#page-profile.active .navbar{display:none}
+body.profile-active .navbar{display:none!important}
+</style>
 </head>
 <body>
 
@@ -120,24 +123,66 @@
 
 <!-- PROFILE -->
 <div class="page" id="page-profile">
-<div class="page-content"><div class="container">
-<div class="profile-header"><div class="profile-avatar"><i class="fas fa-user"></i></div><h1 id="profileName">Welcome</h1><p id="profilePhone"><i class="fab fa-whatsapp"></i> -</p></div>
-<div class="stats-grid">
-<div class="stat-card"><div class="stat-icon bus-stat"><i class="fas fa-bus"></i></div><div class="stat-info"><span class="stat-number" id="statBuses">0</span><span class="stat-label">Bus Trips</span></div></div>
-<div class="stat-card"><div class="stat-icon taxi-stat"><i class="fas fa-taxi"></i></div><div class="stat-info"><span class="stat-number" id="statTaxis">0</span><span class="stat-label">Taxi Rides</span></div></div>
-<div class="stat-card"><div class="stat-icon delivery-stat"><i class="fas fa-motorcycle"></i></div><div class="stat-info"><span class="stat-number" id="statDeliveries">0</span><span class="stat-label">Deliveries</span></div></div>
-<div class="stat-card"><div class="stat-icon total-stat"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><span class="stat-number" id="statTotal">$0</span><span class="stat-label">Total Spent</span></div></div>
+<div class="mobile-profile">
+<!-- Mobile App Header -->
+<div class="app-header">
+<div class="app-header-bg"></div>
+<div class="app-header-content">
+<div class="app-header-top">
+<span class="app-header-title"><i class="fas fa-bus"></i> Hayaan Bus</span>
+<button class="app-header-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
 </div>
-<h2 class="section-title">Our Services</h2>
-<div class="services-grid">
-<div class="service-card" onclick="go('home')"><div class="service-icon bus-service"><i class="fas fa-bus"></i></div><h3>Bus Booking</h3><p>Travel across Somaliland. Choose your seat.</p><ul class="service-features"><li><i class="fas fa-check"></i> Multiple routes</li><li><i class="fas fa-check"></i> Seat selection</li><li><i class="fas fa-check"></i> Real-time schedule</li></ul><div class="service-action"><span class="btn btn-primary">Book Bus <i class="fas fa-arrow-right"></i></span></div></div>
-<div class="service-card" onclick="go('taxi')"><div class="service-icon taxi-service"><i class="fas fa-taxi"></i></div><h3>Taxi Booking</h3><p>Fast, affordable door-to-door service.</p><ul class="service-features"><li><i class="fas fa-check"></i> Door-to-door</li><li><i class="fas fa-check"></i> Standard & premium</li><li><i class="fas fa-check"></i> Schedule for later</li></ul><div class="service-action"><span class="btn btn-primary">Book Taxi <i class="fas fa-arrow-right"></i></span></div></div>
-<div class="service-card" onclick="go('delivery')"><div class="service-icon delivery-service"><i class="fas fa-motorcycle"></i></div><h3>Motorbike Delivery</h3><p>Send packages anywhere fast.</p><ul class="service-features"><li><i class="fas fa-check"></i> Same-day delivery</li><li><i class="fas fa-check"></i> Real-time tracking</li><li><i class="fas fa-check"></i> Safe & secure</li></ul><div class="service-action"><span class="btn btn-primary">Send Delivery <i class="fas fa-arrow-right"></i></span></div></div>
+<div class="profile-card-mobile">
+<div class="profile-avatar-mobile">
+<i class="fas fa-user"></i>
+<div class="avatar-ring"></div>
 </div>
-<h2 class="section-title">Quick Actions</h2>
-<div class="quick-actions"><a href="#bookings" class="quick-action-card"><i class="fas fa-ticket-alt"></i><span>My Bookings</span></a><a href="#taxi" class="quick-action-card"><i class="fas fa-taxi"></i><span>Book Taxi</span></a><a href="#delivery" class="quick-action-card"><i class="fas fa-motorcycle"></i><span>Send Delivery</span></a></div>
-</div></div>
-<footer class="footer"><div class="container"><p>&copy; 2026 Somaliland Express.</p></div></footer>
+<h1 class="profile-name" id="profileName">Welcome</h1>
+<p class="profile-phone" id="profilePhone"><i class="fab fa-whatsapp"></i> -</p>
+<div class="profile-badge"><i class="fas fa-check-circle"></i> Verified Member</div>
+</div>
+</div>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-row-mobile">
+<div class="stat-item-mobile"><div class="stat-val" id="statBuses">0</div><div class="stat-lbl"><i class="fas fa-bus"></i> Bus</div></div>
+<div class="stat-item-mobile"><div class="stat-val" id="statTaxis">0</div><div class="stat-lbl"><i class="fas fa-taxi"></i> Taxi</div></div>
+<div class="stat-item-mobile"><div class="stat-val" id="statDeliveries">0</div><div class="stat-lbl"><i class="fas fa-motorcycle"></i> Delivery</div></div>
+<div class="stat-item-mobile"><div class="stat-val" id="statTotal">$0</div><div class="stat-lbl"><i class="fas fa-dollar-sign"></i> Spent</div></div>
+</div>
+
+<!-- Services Grid -->
+<div class="services-section-mobile">
+<h3 class="section-label">Services</h3>
+<div class="services-grid-mobile">
+<a href="#home" class="service-item-mobile"><div class="service-bus"><i class="fas fa-bus"></i></div><span>Bus Booking</span></a>
+<a href="#taxi" class="service-item-mobile"><div class="service-taxi"><i class="fas fa-taxi"></i></div><span>Book Taxi</span></a>
+<a href="#delivery" class="service-item-mobile"><div class="service-delivery"><i class="fas fa-motorcycle"></i></div><span>Delivery</span></a>
+<a href="#bookings" class="service-item-mobile"><div class="service-bookings"><i class="fas fa-ticket-alt"></i></div><span>My Bookings</span></a>
+</div>
+</div>
+
+<!-- Menu List -->
+<div class="menu-section-mobile">
+<h3 class="section-label">Account</h3>
+<div class="menu-list-mobile">
+<a href="#bookings" class="menu-item-mobile"><div class="menu-icon" style="background:#E3F2FD;color:#1565C0"><i class="fas fa-ticket-alt"></i></div><div class="menu-text"><span>My Bookings</span><small>View all bus trips</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+<a href="#taxi" class="menu-item-mobile"><div class="menu-icon" style="background:#FFF3E0;color:#E65100"><i class="fas fa-taxi"></i></div><div class="menu-text"><span>Book Taxi</span><small>Ride anywhere in city</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+<a href="#delivery" class="menu-item-mobile"><div class="menu-icon" style="background:#E8F5E9;color:#2E7D32"><i class="fas fa-motorcycle"></i></div><div class="menu-text"><span>Send Delivery</span><small>Motorbike package delivery</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+<div class="menu-item-mobile"><div class="menu-icon" style="background:#F3E5F5;color:#6A1B9A"><i class="fas fa-headset"></i></div><div class="menu-text"><span>Help & Support</span><small>Contact us on WhatsApp</small></div><i class="fas fa-chevron-right menu-arrow"></i></div>
+<div class="menu-item-mobile"><div class="menu-icon" style="background:#ECEFF1;color:#546E7A"><i class="fas fa-info-circle"></i></div><div class="menu-text"><span>About</span><small>Hayaan Bus v1.0</small></div><i class="fas fa-chevron-right menu-arrow"></i></div>
+</div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+<a href="#home" class="bottom-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+<a href="#home" class="bottom-nav-item"><i class="fas fa-search"></i><span>Search</span></a>
+<a href="#bookings" class="bottom-nav-item"><i class="fas fa-ticket-alt"></i><span>Tickets</span></a>
+<a href="#profile" class="bottom-nav-item active"><i class="fas fa-user"></i><span>Profile</span></a>
+</div>
+</div>
 </div>
 
 <!-- BOOKINGS -->
@@ -275,7 +320,7 @@
 
 <script src="static/js/app.js"></script>
 <script>
-function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});var el=document.getElementById('page-'+id);if(el)el.classList.add('active');window.scrollTo(0,0)}
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});var el=document.getElementById('page-'+id);if(el)el.classList.add('active');document.body.className=id==='profile'?'profile-active':'';window.scrollTo(0,0)}
 function requireLogin(callback){
   var u=getUser();
   if(!u){localStorage.setItem('se_login_redirect',callback||'home');openLoginModal();return false}
