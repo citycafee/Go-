@@ -256,7 +256,69 @@ function updateModalSummary(){
 function modalProceedToPayment(){
   if(!bookingState.selectedSeats.length)return alert('Select seats first');
   closeSeatModal();
-  go('payment?bus_id='+bookingState.bus_id+'&date='+bookingState.date+'&seats='+bookingState.selectedSeats.join(','));
+  var bus=bookingState.bus,r=getRoute(bus.route_id);
+  document.getElementById('modalSummaryRoute').textContent=r.origin+' \u2192 '+r.destination;
+  document.getElementById('modalSummaryDate').textContent=formatDate(bookingState.date);
+  document.getElementById('modalSummaryDepart').textContent=bus.departure_time;
+  document.getElementById('modalSummaryArrive').textContent=bus.arrival_time;
+  document.getElementById('modalSummarySeats').textContent=bookingState.selectedSeats.sort(function(a,b){return a-b}).join(', ');
+  var total=bus.fare*bookingState.selectedSeats.length;
+  document.getElementById('modalSummaryTotal').textContent='$'+total;
+  document.getElementById('modalPayTotal').textContent='$'+total;
+  bookingState.totalFare=total;
+  bookingState.paymentMethod='';
+  document.getElementById('modalPaymentRefSection').style.display='none';
+  document.getElementById('modalPaymentRef').value='';
+  document.querySelectorAll('#paymentModal input[name=modalPayment]').forEach(function(r){r.checked=false});
+  document.getElementById('paymentModal').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+
+function closePaymentModal(){document.getElementById('paymentModal').classList.remove('active');document.body.style.overflow=''}
+
+function modalSelectPayment(m){
+  bookingState.paymentMethod=m;
+  document.getElementById('modalPaymentRefSection').style.display=m==='cash'?'none':'block';
+  if(m==='cash')document.getElementById('modalPaymentRef').value='';
+}
+
+function modalConfirmBooking(){
+  var u=getUser();
+  if(!u){closePaymentModal();localStorage.setItem('se_login_redirect','');openLoginModal();return}
+  if(!bookingState.paymentMethod)return alert('Select payment method');
+  var ref=document.getElementById('modalPaymentRef').value.trim();
+  if(bookingState.paymentMethod!=='cash'&&!ref)return alert('Enter payment reference');
+  var bookings=getBookings();var id=nextId('bus');
+  var r=getRoute(bookingState.bus.route_id);
+  var booking={id:id,bus_id:bookingState.bus_id,seats:bookingState.selectedSeats.join(','),date:bookingState.date,name:u.full_name,whatsapp:u.whatsapp,fare:bookingState.totalFare,payment:bookingState.paymentMethod,ref:ref,status:'confirmed',origin:r.origin,destination:r.destination,departure:bookingState.bus.departure_time,arrival:bookingState.bus.arrival_time};
+  bookings.push(booking);saveBookings(bookings);
+  localStorage.setItem('se_last_booking',JSON.stringify(booking));
+  closePaymentModal();
+  go('confirmation');
+}
+
+/* ===== ROUTE MODAL ===== */
+function openRouteModal(){
+  var cities=[];DB_ROUTES.forEach(function(r){if(cities.indexOf(r.origin)===-1)cities.push(r.origin);if(cities.indexOf(r.destination)===-1)cities.push(r.destination)});
+  cities.sort();
+  var os=document.getElementById('modalOriginCity'),ds=document.getElementById('modalDestCity');
+  os.innerHTML='<option value="">Select city</option>';ds.innerHTML='<option value="">Select city</option>';
+  cities.forEach(function(c){os.innerHTML+='<option value="'+c+'">'+c+'</option>';ds.innerHTML+='<option value="'+c+'">'+c+'</option>'});
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('modalTravelDate').value=today;
+  document.getElementById('modalTravelDate').min=today;
+  document.getElementById('routeModal').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeRouteModal(){document.getElementById('routeModal').classList.remove('active');document.body.style.overflow=''}
+function modalSwapCities(){var o=document.getElementById('modalOriginCity'),d=document.getElementById('modalDestCity');var t=o.value;o.value=d.value;d.value=t}
+function modalSearchBuses(e){
+  e.preventDefault();
+  var o=document.getElementById('modalOriginCity').value,d=document.getElementById('modalDestCity').value,t=document.getElementById('modalTravelDate').value;
+  if(!o||!d)return alert('Select cities');
+  if(o===d)return alert('Different cities needed');
+  closeRouteModal();
+  go('buses?origin='+encodeURIComponent(o)+'&dest='+encodeURIComponent(d)+'&date='+t);
 }
 
 function loadMyBookings(){

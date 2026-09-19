@@ -156,7 +156,7 @@ body.profile-active .navbar{display:none!important}
 <div class="services-section-mobile">
 <h3 class="section-label">Services</h3>
 <div class="services-grid-mobile">
-<a href="#home" class="service-item-mobile"><div class="service-bus"><i class="fas fa-bus"></i></div><span>Bus Booking</span></a>
+<a href="javascript:void(0)" onclick="openRouteModal()" class="service-item-mobile"><div class="service-bus"><i class="fas fa-bus"></i></div><span>Bus Booking</span></a>
 <a href="#taxi" class="service-item-mobile"><div class="service-taxi"><i class="fas fa-taxi"></i></div><span>Book Taxi</span></a>
 <a href="#delivery" class="service-item-mobile"><div class="service-delivery"><i class="fas fa-motorcycle"></i></div><span>Delivery</span></a>
 <a href="#bookings" class="service-item-mobile"><div class="service-bookings"><i class="fas fa-ticket-alt"></i></div><span>My Bookings</span></a>
@@ -178,7 +178,7 @@ body.profile-active .navbar{display:none!important}
 <!-- Bottom Nav -->
 <div class="bottom-nav">
 <a href="#home" class="bottom-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
-<a href="#home" class="bottom-nav-item"><i class="fas fa-search"></i><span>Search</span></a>
+<a href="javascript:void(0)" onclick="openRouteModal()" class="bottom-nav-item"><i class="fas fa-search"></i><span>Search</span></a>
 <a href="#bookings" class="bottom-nav-item"><i class="fas fa-ticket-alt"></i><span>Tickets</span></a>
 <a href="#profile" class="bottom-nav-item active"><i class="fas fa-user"></i><span>Profile</span></a>
 </div>
@@ -307,6 +307,62 @@ body.profile-active .navbar{display:none!important}
 </div></div>
 </div>
 
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay payment-modal" id="paymentModal">
+<div class="modal-card payment-modal-card">
+<button class="modal-close" onclick="closePaymentModal()">&times;</button>
+<div class="payment-modal-header">
+<div class="payment-modal-icon"><i class="fas fa-credit-card"></i></div>
+<h3>Complete Payment</h3>
+</div>
+<div class="payment-modal-body">
+<div class="payment-summary-card">
+<h4><i class="fas fa-receipt"></i> Booking Summary</h4>
+<div class="summary-row"><span>Route</span><strong id="modalSummaryRoute">-</strong></div>
+<div class="summary-row"><span>Date</span><strong id="modalSummaryDate">-</strong></div>
+<div class="summary-row"><span>Departure</span><strong id="modalSummaryDepart">-</strong></div>
+<div class="summary-row"><span>Arrival</span><strong id="modalSummaryArrive">-</strong></div>
+<div class="summary-row"><span>Seats</span><strong id="modalSummarySeats">-</strong></div>
+<div class="summary-row total-row"><span>Total Fare</span><strong id="modalSummaryTotal">-</strong></div>
+</div>
+<div class="payment-method-section">
+<h4><i class="fas fa-wallet"></i> Payment Method</h4>
+<div class="payment-options">
+<label class="payment-option" onclick="modalSelectPayment('zaad')"><input type="radio" name="modalPayment" value="zaad"><div class="option-content zaad-option"><div class="option-icon"><i class="fas fa-mobile-alt"></i></div><div class="option-info"><h4>Zaad</h4><p>Send to <strong>063 4251661</strong></p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="modalSelectPayment('edahab')"><input type="radio" name="modalPayment" value="edahab"><div class="option-content edahab-option"><div class="option-icon"><i class="fas fa-money-check-alt"></i></div><div class="option-info"><h4>Edahab</h4><p>Send to <strong>063 4251661</strong></p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="modalSelectPayment('cash')"><input type="radio" name="modalPayment" value="cash"><div class="option-content cash-option"><div class="option-icon"><i class="fas fa-money-bill-wave"></i></div><div class="option-info"><h4>Cash</h4><p>Pay when you board</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+</div>
+<div class="payment-ref-section" id="modalPaymentRefSection" style="display:none"><div class="form-group"><label><i class="fas fa-hashtag"></i> Payment Reference</label><input type="text" id="modalPaymentRef" placeholder="Enter transaction ID"></div><p class="payment-note">Enter reference after sending payment</p></div>
+</div>
+</div>
+<div class="payment-modal-footer">
+<div class="payment-modal-total"><span>Total:</span><strong id="modalPayTotal">$0</strong></div>
+<button class="btn btn-primary btn-lg" onclick="modalConfirmBooking()"><i class="fas fa-check-circle"></i> Confirm Booking</button>
+</div>
+</div>
+</div>
+
+<!-- ROUTE SELECTOR MODAL -->
+<div class="modal-overlay route-modal" id="routeModal">
+<div class="modal-card route-modal-card">
+<button class="modal-close" onclick="closeRouteModal()">&times;</button>
+<div class="route-modal-header">
+<div class="route-modal-icon"><i class="fas fa-route"></i></div>
+<h3>Select Your Route</h3>
+<p>Where are you going?</p>
+</div>
+<div class="route-modal-body">
+<form id="modalRouteForm" onsubmit="modalSearchBuses(event)">
+<div class="form-group"><label><i class="fas fa-map-marker-alt"></i> From</label><select id="modalOriginCity" required><option value="">Select city</option></select></div>
+<div class="route-arrow" onclick="modalSwapCities()"><i class="fas fa-exchange-alt"></i></div>
+<div class="form-group"><label><i class="fas fa-flag-checkered"></i> To</label><select id="modalDestCity" required><option value="">Select city</option></select></div>
+<div class="form-group"><label><i class="fas fa-calendar"></i> Date</label><input type="date" id="modalTravelDate" required></div>
+<button type="submit" class="btn btn-primary btn-block btn-lg"><i class="fas fa-search"></i> Find Buses</button>
+</form>
+</div>
+</div>
+</div>
+
 <!-- SEAT SELECTION MODAL -->
 <div class="modal-overlay seat-modal" id="seatModal">
 <div class="modal-card seat-modal-card">
@@ -368,7 +424,7 @@ function router(){
   else if(page==='delivery-confirm')loadDeliveryConfirmation();
   else if(page==='verify')loadVerify();
 }
-window.addEventListener('hashchange',function(){closeSeatModal();router()});
+window.addEventListener('hashchange',function(){closeSeatModal();closePaymentModal();closeRouteModal();router()});
 window.addEventListener('load',function(){
   if(!location.hash)location.hash='home';
   var u=getUser();
@@ -376,6 +432,8 @@ window.addEventListener('load',function(){
   router();checkLogin();
 });
 document.getElementById('seatModal').addEventListener('click',function(e){if(e.target===this)closeSeatModal()});
+document.getElementById('paymentModal').addEventListener('click',function(e){if(e.target===this)closePaymentModal()});
+document.getElementById('routeModal').addEventListener('click',function(e){if(e.target===this)closeRouteModal()});
 </script>
 </body>
 </html>
