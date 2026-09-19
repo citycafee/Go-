@@ -17,7 +17,7 @@ function saveDeliveryBookings(b){localStorage.setItem('se_delivery_bookings',JSO
 function getRoute(rId){return DB_ROUTES.find(function(r){return r.id===rId})}
 function nextId(key){var id=parseInt(localStorage.getItem('se_'+key+'_id')||'0')+1;localStorage.setItem('se_'+key+'_id',id);return id}
 function formatDate(d){return new Date(d).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}
-function getParam(k){return new URLSearchParams(window.location.search).get(k)}
+function getParam(k){var h=location.hash.split('?')[1]||'';return new URLSearchParams(h).get(k)}
 function go(hash){window.location.hash=hash}
 function checkLogin(){var u=getUser();document.querySelectorAll('.user-info').forEach(function(el){el.style.display=u?'flex':'none'});document.querySelectorAll('#loginTrigger').forEach(function(el){el.style.display=u?'none':'block'});document.querySelectorAll('#userName').forEach(function(el){if(u)el.textContent=u.full_name})}
 function openLoginModal(){document.getElementById('loginModal').classList.add('active')}
