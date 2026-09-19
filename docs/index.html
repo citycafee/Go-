@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Somaliland Express</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="static/css/style.css">
+<style>.page{display:none}.page.active{display:block}</style>
+</head>
+<body>
+
+<nav class="navbar">
+<a href="#home" class="nav-brand"><div class="brand-icon"><i class="fas fa-bus"></i></div><div class="brand-text">Somaliland <span>Express</span></div></a>
+<div class="nav-right">
+<div class="user-info" id="userInfo" style="display:none"><i class="fas fa-user-circle"></i><span id="userName"></span><a href="#profile" class="btn-link"><i class="fas fa-home"></i> Profile</a><a href="#bookings" class="btn-link"><i class="fas fa-ticket-alt"></i> Bookings</a><button class="btn-link logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button></div>
+<div id="loginTrigger"><button class="btn btn-primary" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> Login</button></div>
+</div>
+</nav>
+
+<!-- HOME -->
+<div class="page" id="page-home">
+<div class="hero"><div class="hero-bg"></div><div class="hero-content"><h1>Book <span>Bus Tickets</span> Across Somaliland</h1><p>Fast, safe, reliable transport. Choose your seat, pay with Zaad, Edahab or cash.</p></div></div>
+<section class="booking-section"><div class="container"><div class="booking-card"><h2><i class="fas fa-route"></i> Select Your Route</h2>
+<form id="routeForm" onsubmit="searchBuses(event)"><div class="route-selector">
+<div class="form-group"><label><i class="fas fa-map-marker-alt"></i> From</label><select id="originCity" required><option value="">Select city</option></select></div>
+<div class="route-arrow" onclick="swapCities()"><i class="fas fa-exchange-alt"></i></div>
+<div class="form-group"><label><i class="fas fa-flag-checkered"></i> To</label><select id="destCity" required><option value="">Select city</option></select></div>
+<div class="form-group"><label><i class="fas fa-calendar"></i> Date</label><input type="date" id="travelDate" required></div>
+<button type="submit" class="btn btn-primary btn-lg search-btn"><i class="fas fa-search"></i> Find Buses</button>
+</div></form></div></div></section>
+<section class="cities-section"><div class="container"><h2 class="section-title">Destinations</h2>
+<div class="cities-grid">
+<div class="city-card" onclick="selectRoute('Hargeisa','Berbera')"><div class="city-icon"><i class="fas fa-anchor"></i></div><h3>Berbera</h3><p>Historic port city</p><span class="city-tag">Popular</span></div>
+<div class="city-card" onclick="selectRoute('Hargeisa','Burao')"><div class="city-icon"><i class="fas fa-mountain"></i></div><h3>Burao</h3><p>Commercial hub</p></div>
+<div class="city-card" onclick="selectRoute('Hargeisa','Erigavo')"><div class="city-icon"><i class="fas fa-tree"></i></div><h3>Erigavo</h3><p>Mountain gateway</p></div>
+<div class="city-card" onclick="selectRoute('Hargeisa','Borama')"><div class="city-icon"><i class="fas fa-graduation-cap"></i></div><h3>Borama</h3><p>Education capital</p></div>
+</div></div></section>
+<section class="features-section"><div class="container"><div class="features-grid">
+<div class="feature-card"><div class="feature-icon"><i class="fas fa-mobile-alt"></i></div><h3>WhatsApp Login</h3><p>Login with name and WhatsApp</p></div>
+<div class="feature-card"><div class="feature-icon"><i class="fas fa-chair"></i></div><h3>Choose Your Seat</h3><p>Select preferred seat</p></div>
+<div class="feature-card"><div class="feature-icon"><i class="fas fa-money-bill-wave"></i></div><h3>Zaad / Edahab / Cash</h3><p>Pay with mobile money</p></div>
+<div class="feature-card"><div class="feature-icon"><i class="fas fa-clock"></i></div><h3>Real-time Schedule</h3><p>Exact departure times</p></div>
+</div></div></section>
+<footer class="footer"><div class="container"><p>&copy; 2026 Somaliland Express. All rights reserved.</p></div></footer>
+</div>
+
+<!-- BUSES -->
+<div class="page" id="page-buses">
+<div class="page-content"><div class="container">
+<a href="#home" class="back-link"><i class="fas fa-arrow-left"></i> Change Route</a>
+<div class="route-banner"><h2><i class="fas fa-route"></i> <span id="routeLabel">Loading...</span></h2><span class="date-label" id="dateLabel"></span></div>
+<div class="bus-list" id="busList"><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+<div class="no-buses" id="noBuses" style="display:none"><i class="fas fa-bus-slash"></i><h3>No buses found</h3><p>No buses for this route.</p><a href="#home" class="btn btn-primary">Try Another Date</a></div>
+</div></div>
+</div>
+
+<!-- SEATS -->
+<div class="page" id="page-seats">
+<div class="page-content"><div class="container">
+<a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+<div class="bus-info-bar"><div class="bus-route-info"><span class="route-label" id="busRoute">Loading...</span></div>
+<div class="bus-time-info"><span><i class="fas fa-calendar"></i> <span id="busDate">--</span></span><span><i class="fas fa-clock"></i> <span id="busTime">--</span></span><span><i class="fas fa-hourglass-half"></i> <span id="busDuration">--</span></span></div></div>
+<div class="seat-selection-area">
+<div class="bus-visual">
+<div class="van-header"><div class="van-front-label"><i class="fas fa-wind"></i><span>FRONT OF VAN</span></div></div>
+<div class="van-seats-grid" id="seatsGrid"></div>
+<div class="seats-summary" id="seatsSummary"></div>
+</div>
+<div class="seat-legend"><div class="legend-item"><span class="seat-box available"></span> Available</div><div class="legend-item"><span class="seat-box selected"></span> Selected</div><div class="legend-item"><span class="seat-box taken"></span> Taken</div></div>
+<div class="selection-summary" id="selectionSummary" style="display:none"><h3>Your Selection</h3><div class="selected-seats" id="selectedSeatsList"></div>
+<div class="fare-summary"><span>Seats: <strong id="seatCount">0</strong></span><span>Price: <strong id="seatPrice">$0</strong></span><span class="total">Total: <strong id="totalFare">$0</strong></span></div>
+<button class="btn btn-primary btn-lg btn-block" onclick="proceedToPayment()"><i class="fas fa-credit-card"></i> Proceed to Payment</button></div>
+</div></div></div>
+</div>
+
+<!-- PAYMENT -->
+<div class="page" id="page-payment">
+<div class="page-content"><div class="container">
+<a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+<div class="payment-container">
+<div class="booking-summary-card"><h2><i class="fas fa-receipt"></i> Booking Summary</h2>
+<div class="summary-row"><span>Route</span><strong id="summaryRoute">-</strong></div>
+<div class="summary-row"><span>Date</span><strong id="summaryDate">-</strong></div>
+<div class="summary-row"><span>Departure</span><strong id="summaryDepart">-</strong></div>
+<div class="summary-row"><span>Arrival</span><strong id="summaryArrive">-</strong></div>
+<div class="summary-row"><span>Seats</span><strong id="summarySeats">-</strong></div>
+<div class="summary-row total-row"><span>Total Fare</span><strong id="summaryTotal">-</strong></div>
+</div>
+<div class="payment-method-card"><h2><i class="fas fa-wallet"></i> Payment Method</h2>
+<div class="payment-options">
+<label class="payment-option" onclick="selectPayment('zaad')"><input type="radio" name="payment" value="zaad"><div class="option-content zaad-option"><div class="option-icon"><i class="fas fa-mobile-alt"></i></div><div class="option-info"><h4>Zaad</h4><p>Send to <strong>063 4251661</strong></p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="selectPayment('edahab')"><input type="radio" name="payment" value="edahab"><div class="option-content edahab-option"><div class="option-icon"><i class="fas fa-money-check-alt"></i></div><div class="option-info"><h4>Edahab</h4><p>Send to <strong>063 4251661</strong></p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="selectPayment('cash')"><input type="radio" name="payment" value="cash"><div class="option-content cash-option"><div class="option-icon"><i class="fas fa-money-bill-wave"></i></div><div class="option-info"><h4>Cash</h4><p>Pay when you board</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+</div>
+<div class="payment-ref-section" id="paymentRefSection" style="display:none"><div class="form-group"><label><i class="fas fa-hashtag"></i> Payment Reference</label><input type="text" id="paymentRef" placeholder="Enter transaction ID"></div><p class="payment-note">Enter reference after sending payment</p></div>
+<button class="btn btn-primary btn-lg btn-block" id="confirmBtn" onclick="confirmBooking()"><i class="fas fa-check-circle"></i> Confirm Booking</button>
+</div></div></div></div>
+</div>
+
+<!-- CONFIRMATION -->
+<div class="page" id="page-confirmation">
+<div class="page-content"><div class="container"><div class="confirmation-container">
+<div class="success-animation"><div class="check-circle"><i class="fas fa-check"></i></div></div>
+<h1 class="success-title">Booking Confirmed!</h1>
+<p class="success-subtitle">Show this ticket when you board</p>
+<div class="ticket-qr-layout">
+<div class="saveable-ticket" id="saveableTicket">
+<div class="ticket-print-header"><div class="ticket-print-brand"><i class="fas fa-bus"></i><span>Somaliland Express</span></div><div class="ticket-print-id">#<span id="ticketId">-</span></div></div>
+<div class="ticket-print-route"><div class="route-from"><i class="fas fa-circle"></i><span id="ticketFrom">-</span></div><div class="route-line"><i class="fas fa-long-arrow-alt-right"></i></div><div class="route-to"><i class="fas fa-map-marker-alt"></i><span id="ticketTo">-</span></div></div>
+<div class="ticket-print-grid"><div class="ticket-print-item"><small>Date</small><strong id="ticketDate">-</strong></div><div class="ticket-print-item"><small>Departure</small><strong id="ticketDepart">-</strong></div><div class="ticket-print-item"><small>Arrival</small><strong id="ticketArrive">-</strong></div><div class="ticket-print-item"><small>Seats</small><strong id="ticketSeats">-</strong></div><div class="ticket-print-item"><small>Passenger</small><strong id="ticketPassenger">-</strong></div><div class="ticket-print-item"><small>Payment</small><strong id="ticketPayment">-</strong></div></div>
+<div class="ticket-print-total"><span>Total Paid</span><strong id="ticketTotal">$0</strong></div>
+<div class="ticket-print-footer"><p>Somaliland Express Bus Transport</p><p>Keep this ticket safe.</p></div>
+</div>
+<div class="qr-standalone-card"><div class="qr-card-header"><i class="fas fa-qrcode"></i><span>Scan to Verify</span></div><div class="qr-card-body"><img id="qrcode-img" src="" alt="QR Code" style="border:8px solid #f0f0f0;border-radius:12px"><p class="qr-instruction">Scan to verify your ticket</p><div class="qr-booking-id">Booking #<span id="qrBookingId">-</span></div></div></div>
+</div>
+<div class="action-buttons"><a href="#home" class="btn btn-primary"><i class="fas fa-home"></i> Home</a><a href="#bookings" class="btn btn-outline"><i class="fas fa-ticket-alt"></i> My Bookings</a></div>
+</div></div></div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="page-profile">
+<div class="page-content"><div class="container">
+<div class="profile-header"><div class="profile-avatar"><i class="fas fa-user"></i></div><h1 id="profileName">Welcome</h1><p id="profilePhone"><i class="fab fa-whatsapp"></i> -</p></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon bus-stat"><i class="fas fa-bus"></i></div><div class="stat-info"><span class="stat-number" id="statBuses">0</span><span class="stat-label">Bus Trips</span></div></div>
+<div class="stat-card"><div class="stat-icon taxi-stat"><i class="fas fa-taxi"></i></div><div class="stat-info"><span class="stat-number" id="statTaxis">0</span><span class="stat-label">Taxi Rides</span></div></div>
+<div class="stat-card"><div class="stat-icon delivery-stat"><i class="fas fa-motorcycle"></i></div><div class="stat-info"><span class="stat-number" id="statDeliveries">0</span><span class="stat-label">Deliveries</span></div></div>
+<div class="stat-card"><div class="stat-icon total-stat"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><span class="stat-number" id="statTotal">$0</span><span class="stat-label">Total Spent</span></div></div>
+</div>
+<h2 class="section-title">Our Services</h2>
+<div class="services-grid">
+<div class="service-card" onclick="go('home')"><div class="service-icon bus-service"><i class="fas fa-bus"></i></div><h3>Bus Booking</h3><p>Travel across Somaliland. Choose your seat.</p><ul class="service-features"><li><i class="fas fa-check"></i> Multiple routes</li><li><i class="fas fa-check"></i> Seat selection</li><li><i class="fas fa-check"></i> Real-time schedule</li></ul><div class="service-action"><span class="btn btn-primary">Book Bus <i class="fas fa-arrow-right"></i></span></div></div>
+<div class="service-card" onclick="go('taxi')"><div class="service-icon taxi-service"><i class="fas fa-taxi"></i></div><h3>Taxi Booking</h3><p>Fast, affordable door-to-door service.</p><ul class="service-features"><li><i class="fas fa-check"></i> Door-to-door</li><li><i class="fas fa-check"></i> Standard & premium</li><li><i class="fas fa-check"></i> Schedule for later</li></ul><div class="service-action"><span class="btn btn-primary">Book Taxi <i class="fas fa-arrow-right"></i></span></div></div>
+<div class="service-card" onclick="go('delivery')"><div class="service-icon delivery-service"><i class="fas fa-motorcycle"></i></div><h3>Motorbike Delivery</h3><p>Send packages anywhere fast.</p><ul class="service-features"><li><i class="fas fa-check"></i> Same-day delivery</li><li><i class="fas fa-check"></i> Real-time tracking</li><li><i class="fas fa-check"></i> Safe & secure</li></ul><div class="service-action"><span class="btn btn-primary">Send Delivery <i class="fas fa-arrow-right"></i></span></div></div>
+</div>
+<h2 class="section-title">Quick Actions</h2>
+<div class="quick-actions"><a href="#bookings" class="quick-action-card"><i class="fas fa-ticket-alt"></i><span>My Bookings</span></a><a href="#taxi" class="quick-action-card"><i class="fas fa-taxi"></i><span>Book Taxi</span></a><a href="#delivery" class="quick-action-card"><i class="fas fa-motorcycle"></i><span>Send Delivery</span></a></div>
+</div></div>
+<footer class="footer"><div class="container"><p>&copy; 2026 Somaliland Express.</p></div></footer>
+</div>
+
+<!-- BOOKINGS -->
+<div class="page" id="page-bookings">
+<div class="page-content"><div class="container">
+<h1 class="page-title"><i class="fas fa-ticket-alt"></i> My Bookings</h1>
+<div class="bookings-list" id="bookingsList"><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+<div class="no-bookings" id="noBookings" style="display:none"><i class="fas fa-ticket-alt"></i><h3>No Bookings Yet</h3><p>You haven't booked any tickets.</p><a href="#home" class="btn btn-primary"><i class="fas fa-bus"></i> Book Now</a></div>
+</div></div>
+</div>
+
+<!-- TAXI -->
+<div class="page" id="page-taxi">
+<div class="page-content"><div class="container">
+<a href="#profile" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+<div class="route-banner"><h2><i class="fas fa-taxi"></i> Book a Taxi</h2></div>
+<div class="payment-container">
+<div class="booking-summary-card"><h2><i class="fas fa-map-marker-alt"></i> Trip Details</h2>
+<form id="taxiForm" onsubmit="submitTaxiBooking(event)">
+<div class="form-group"><label><i class="fas fa-circle" style="color:var(--success);font-size:0.6rem"></i> Pickup</label><input type="text" id="taxiPickup" placeholder="e.g. Hargeisa Market" required></div>
+<div class="form-group"><label><i class="fas fa-map-pin" style="color:var(--danger)"></i> Drop-off</label><input type="text" id="taxiDropoff" placeholder="e.g. Hargeisa Airport" required></div>
+<div class="form-group"><label><i class="fas fa-car"></i> Taxi Type</label><select id="taxiType" onchange="updateTaxiFare()"><option value="standard">Standard - $5</option><option value="comfort">Comfort - $8</option><option value="premium">Premium - $12</option></select></div>
+<div class="form-group"><label><i class="fas fa-clock"></i> Schedule (optional)</label><input type="datetime-local" id="taxiSchedule"></div>
+<div class="taxi-fare-display"><span>Estimated Fare</span><strong id="taxiFareDisplay">$5</strong></div>
+<button type="submit" class="btn btn-primary btn-block btn-lg" id="taxiBookBtn"><i class="fas fa-check-circle"></i> Book Taxi</button>
+</form></div>
+<div class="payment-method-card"><h2><i class="fas fa-credit-card"></i> Payment</h2>
+<div class="payment-options">
+<label class="payment-option" onclick="selectTaxiPayment('zaad')"><input type="radio" name="taxiPayment" value="zaad"><div class="option-content zaad-option"><div class="option-icon"><i class="fas fa-mobile-alt"></i></div><div class="option-info"><h4>Zaad</h4><p>Mobile money</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="selectTaxiPayment('edahab')"><input type="radio" name="taxiPayment" value="edahab"><div class="option-content edahab-option"><div class="option-icon"><i class="fas fa-wallet"></i></div><div class="option-info"><h4>Edahab</h4><p>Mobile money</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="selectTaxiPayment('cash')"><input type="radio" name="taxiPayment" value="cash"><div class="option-content cash-option"><div class="option-icon"><i class="fas fa-money-bill-wave"></i></div><div class="option-info"><h4>Cash</h4><p>Pay on arrival</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+</div>
+<div class="payment-ref-section" id="taxiRefSection" style="display:none"><div class="form-group"><label>Reference Number</label><input type="text" id="taxiPaymentRef" placeholder="Transaction reference"></div></div>
+</div></div></div></div>
+</div>
+
+<!-- TAXI CONFIRM -->
+<div class="page" id="page-taxi-confirm">
+<div class="page-content"><div class="container"><div class="confirmation-container">
+<div class="success-animation"><div class="check-circle" style="background:#FFC107"><i class="fas fa-taxi"></i></div></div>
+<h1 class="success-title" style="color:#FFC107">Taxi Booked!</h1><p class="success-subtitle">Your taxi is on its way</p>
+<div class="ticket-qr-layout">
+<div class="saveable-ticket"><div class="ticket-print-header" style="background:linear-gradient(135deg,#E65100,#FF8F00)"><div class="ticket-print-brand"><i class="fas fa-taxi"></i><span>Somaliland Express Taxi</span></div><div class="ticket-print-id">#<span id="taxiId">-</span></div></div>
+<div class="ticket-print-route"><div class="route-from"><i class="fas fa-circle"></i><span id="taxiPickup">-</span></div><div class="route-line"><i class="fas fa-long-arrow-alt-right"></i></div><div class="route-to"><i class="fas fa-map-marker-alt"></i><span id="taxiDropoff">-</span></div></div>
+<div class="ticket-print-grid" style="grid-template-columns:1fr 1fr"><div class="ticket-print-item"><small>Type</small><strong id="taxiType">-</strong></div><div class="ticket-print-item"><small>Passenger</small><strong id="taxiPassenger">-</strong></div><div class="ticket-print-item"><small>Payment</small><strong id="taxiPayment">-</strong></div><div class="ticket-print-item"><small>Status</small><strong>CONFIRMED</strong></div></div>
+<div class="ticket-print-total"><span>Total Fare</span><strong id="taxiTotal">$0</strong></div>
+<div class="ticket-print-footer"><p>Somaliland Express Taxi</p><p>Driver will contact you.</p></div></div>
+<div class="qr-standalone-card"><div class="qr-card-header" style="background:linear-gradient(135deg,#E65100,#FF8F00)"><i class="fas fa-qrcode"></i><span>Scan to Verify</span></div><div class="qr-card-body"><img id="qrcode-img" src="" alt="QR" style="border:8px solid #f0f0f0;border-radius:12px"><p class="qr-instruction">Scan to verify taxi booking</p><div class="qr-booking-id" style="background:#FFF3E0;color:#E65100">Booking #<span id="qrBookingId">-</span></div></div></div>
+</div>
+<div class="action-buttons"><a href="#profile" class="btn btn-primary"><i class="fas fa-home"></i> Profile</a><a href="#bookings" class="btn btn-outline"><i class="fas fa-ticket-alt"></i> My Bookings</a></div>
+</div></div></div>
+</div>
+
+<!-- DELIVERY -->
+<div class="page" id="page-delivery">
+<div class="page-content"><div class="container">
+<a href="#profile" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+<div class="route-banner delivery-banner"><h2><i class="fas fa-motorcycle"></i> Motorbike Delivery</h2></div>
+<div class="payment-container">
+<div class="booking-summary-card"><h2><i class="fas fa-box"></i> Delivery Details</h2>
+<form id="deliveryForm" onsubmit="submitDeliveryBooking(event)">
+<div class="form-group"><label><i class="fas fa-circle" style="color:var(--success);font-size:0.6rem"></i> Pickup</label><input type="text" id="deliveryPickup" placeholder="e.g. Hargeisa Market" required></div>
+<div class="form-group"><label><i class="fas fa-map-pin" style="color:var(--danger)"></i> Drop-off</label><input type="text" id="deliveryDropoff" placeholder="e.g. Burao Street" required></div>
+<h3 style="margin:20px 0 10px;color:var(--dark);font-size:1rem"><i class="fas fa-user"></i> Recipient</h3>
+<div class="form-group"><label>Recipient Name</label><input type="text" id="recipientName" placeholder="Who receives?" required></div>
+<div class="form-group"><label>Recipient Phone</label><input type="tel" id="recipientPhone" placeholder="e.g. 61 9876543" required></div>
+<h3 style="margin:20px 0 10px;color:var(--dark);font-size:1rem"><i class="fas fa-box"></i> Package</h3>
+<div class="form-group"><label>Item Description</label><input type="text" id="itemDescription" placeholder="e.g. Documents, Phone" required></div>
+<div class="form-group"><label>Item Value ($)</label><input type="number" id="itemValue" min="0" value="0"></div>
+<div class="taxi-fare-display"><span>Delivery Fee</span><strong id="deliveryFareDisplay">$3</strong></div>
+<button type="submit" class="btn btn-success btn-block btn-lg" id="deliveryBookBtn"><i class="fas fa-paper-plane"></i> Send Delivery</button>
+</form></div>
+<div class="payment-method-card"><h2><i class="fas fa-credit-card"></i> Payment</h2>
+<div class="payment-options">
+<label class="payment-option" onclick="selectDeliveryPayment('zaad')"><input type="radio" name="deliveryPayment" value="zaad"><div class="option-content zaad-option"><div class="option-icon"><i class="fas fa-mobile-alt"></i></div><div class="option-info"><h4>Zaad</h4><p>Mobile money</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="selectDeliveryPayment('edahab')"><input type="radio" name="deliveryPayment" value="edahab"><div class="option-content edahab-option"><div class="option-icon"><i class="fas fa-wallet"></i></div><div class="option-info"><h4>Edahab</h4><p>Mobile money</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+<label class="payment-option" onclick="selectDeliveryPayment('cash')"><input type="radio" name="deliveryPayment" value="cash"><div class="option-content cash-option"><div class="option-icon"><i class="fas fa-money-bill-wave"></i></div><div class="option-info"><h4>Cash</h4><p>Pay on delivery</p></div><div class="option-check"><i class="fas fa-check-circle"></i></div></div></label>
+</div>
+<div class="payment-ref-section" id="deliveryRefSection" style="display:none"><div class="form-group"><label>Reference Number</label><input type="text" id="deliveryPaymentRef" placeholder="Transaction reference"></div></div>
+</div></div></div></div>
+</div>
+
+<!-- DELIVERY CONFIRM -->
+<div class="page" id="page-delivery-confirm">
+<div class="page-content"><div class="container"><div class="confirmation-container">
+<div class="success-animation"><div class="check-circle" style="background:#2E7D32"><i class="fas fa-motorcycle"></i></div></div>
+<h1 class="success-title">Delivery Booked!</h1><p class="success-subtitle">Your package is on its way</p>
+<div class="ticket-qr-layout">
+<div class="saveable-ticket"><div class="ticket-print-header" style="background:linear-gradient(135deg,#1B5E20,#2E7D32)"><div class="ticket-print-brand"><i class="fas fa-motorcycle"></i><span>Somaliland Express Delivery</span></div><div class="ticket-print-id">#<span id="deliveryId">-</span></div></div>
+<div class="ticket-print-route"><div class="route-from"><i class="fas fa-circle"></i><span id="deliveryPickup">-</span></div><div class="route-line"><i class="fas fa-long-arrow-alt-right"></i></div><div class="route-to"><i class="fas fa-map-marker-alt"></i><span id="deliveryDropoff">-</span></div></div>
+<div class="ticket-print-grid" style="grid-template-columns:1fr 1fr"><div class="ticket-print-item"><small>Sender</small><strong id="deliverySender">-</strong></div><div class="ticket-print-item"><small>Recipient</small><strong id="deliveryRecipient">-</strong></div><div class="ticket-print-item"><small>Item</small><strong id="deliveryItem">-</strong></div><div class="ticket-print-item"><small>Payment</small><strong id="deliveryPayment">-</strong></div></div>
+<div class="ticket-print-total" style="background:#E8F5E9;border-top-color:#C8E6C9"><span>Delivery Fee</span><strong id="deliveryTotal" style="color:#2E7D32">$0</strong></div>
+<div class="ticket-print-footer" style="background:#1B5E20"><p>Somaliland Express Delivery</p><p>Package delivered safely.</p></div></div>
+<div class="qr-standalone-card"><div class="qr-card-header" style="background:linear-gradient(135deg,#1B5E20,#2E7D32)"><i class="fas fa-qrcode"></i><span>Scan to Verify</span></div><div class="qr-card-body"><img id="qrcode-img" src="" alt="QR" style="border:8px solid #f0f0f0;border-radius:12px"><p class="qr-instruction">Scan to verify delivery</p><div class="qr-booking-id" style="background:#E8F5E9;color:#1B5E20">Booking #<span id="qrBookingId">-</span></div></div></div>
+</div>
+<div class="action-buttons"><a href="#profile" class="btn btn-primary"><i class="fas fa-home"></i> Profile</a><a href="#bookings" class="btn btn-outline"><i class="fas fa-ticket-alt"></i> My Bookings</a></div>
+</div></div></div>
+</div>
+
+<!-- VERIFY -->
+<div class="page" id="page-verify">
+<div class="page-content"><div class="container">
+<div class="verify-container">
+<div id="loadingState" class="loading" style="text-align:center;padding:60px"><i class="fas fa-spinner" style="font-size:2rem;color:#394999;animation:spin 1s linear infinite"></i><p style="margin-top:15px">Verifying ticket...</p></div>
+<div id="verifyResult" style="display:none">
+<div class="verify-card"><div class="verify-header"><div class="bus-icon"><i class="fas fa-bus"></i></div><h1>Somaliland Express</h1><p>Ticket Verification</p></div>
+<div class="verify-status" id="statusSection"><div class="status-icon" id="statusIcon"></div><h2 id="statusTitle"></h2><p id="statusText"></p></div>
+<div class="verify-route" id="routeSection" style="display:none"><span id="verifyFrom"></span><i class="fas fa-long-arrow-alt-right"></i><span id="verifyTo"></span></div>
+<div class="verify-details" id="detailsSection" style="display:none">
+<div class="verify-row"><span class="label">Booking ID</span><span class="value" id="verifyBookingId"></span></div>
+<div class="verify-row"><span class="label">Passenger</span><span class="value" id="verifyPassenger"></span></div>
+<div class="verify-row"><span class="label">Travel Date</span><span class="value" id="verifyDate"></span></div>
+<div class="verify-row"><span class="label">Departure</span><span class="value" id="verifyDepart"></span></div>
+<div class="verify-row"><span class="label">Arrival</span><span class="value" id="verifyArrive"></span></div>
+<div class="verify-row"><span class="label">Seat(s)</span><span class="value" id="verifySeats"></span></div>
+<div class="verify-row"><span class="label">Payment</span><span class="value" id="verifyPayment"></span></div>
+<div class="verify-row"><span class="label">Total Paid</span><span class="value" id="verifyTotal"></span></div>
+<div class="verify-row"><span class="label">Status</span><span class="value" id="verifyStatus"></span></div>
+</div>
+<div class="verify-footer"><p>Somaliland Express</p><p>Verified at <span id="verifyTime"></span></p></div>
+</div></div></div>
+</div></div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal"><div class="modal-card">
+<button class="modal-close" onclick="closeLoginModal()">&times;</button>
+<div class="modal-header"><div class="modal-icon"><i class="fas fa-bus"></i></div><h2>Gal</h2><p>Enter your details</p></div>
+<form id="loginForm" onsubmit="doLogin(event)">
+<div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="loginName" placeholder="Your full name" required></div>
+<div class="form-group"><label><i class="fab fa-whatsapp"></i> WhatsApp Number</label><input type="tel" id="loginWhatsApp" placeholder="e.g. 61 1234567" required></div>
+<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Login / Register</button>
+</form>
+</div></div>
+
+<script src="static/js/app.js"></script>
+<script>
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});var el=document.getElementById('page-'+id);if(el)el.classList.add('active');window.scrollTo(0,0)}
+function router(){var h=location.hash.replace('#','').split('?')[0]||'home';var page=h.split('?')[0];showPage(page);checkLogin();
+if(page==='home')loadCities();
+else if(page==='buses')loadBuses();
+else if(page==='seats'){bookingState.selectedSeats=[];loadSeats()}
+else if(page==='payment')loadPaymentPage();
+else if(page==='confirmation')loadConfirmation();
+else if(page==='profile')loadProfile();
+else if(page==='bookings')loadMyBookings();
+else if(page==='taxi-confirm')loadTaxiConfirmation();
+else if(page==='delivery-confirm')loadDeliveryConfirmation();
+else if(page==='verify')loadVerify();
+}
+window.addEventListener('hashchange',router);
+window.addEventListener('load',function(){if(!location.hash)location.hash='home';router();checkLogin()});
+</script>
+</body>
+</html>
