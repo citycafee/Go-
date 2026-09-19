@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Bus - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+        <div class="nav-right">
+            <div class="user-info" id="userInfo" style="display:none">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Change Route</a>
+
+            <div class="route-banner" id="routeBanner">
+                <h2><i class="fas fa-route"></i> <span id="routeLabel">Loading...</span></h2>
+                <span class="date-label" id="dateLabel"></span>
+            </div>
+
+            <div class="bus-list" id="busList">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading buses...
+                </div>
+            </div>
+
+            <div class="no-buses" id="noBuses" style="display:none">
+                <i class="fas fa-bus-slash"></i>
+                <h3>No buses found</h3>
+                <p>There are no buses available for this route on this date.</p>
+                <a href="/" class="btn btn-primary">Try Another Date</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>loadBuses();</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Ticket - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { background: #f0f2f5; }
+        .verify-container { max-width: 480px; margin: 40px auto; padding: 20px; }
+        .verify-card {
+            background: #fff; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .verify-header {
+            background: linear-gradient(135deg, #1A237E, #3949AB);
+            color: #fff; padding: 30px 20px; text-align: center;
+        }
+        .verify-header .bus-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .verify-header h1 { font-size: 1.4rem; margin: 0; }
+        .verify-header p { opacity: 0.8; margin-top: 5px; font-size: 0.9rem; }
+        .verify-status { text-align: center; padding: 20px; }
+        .verify-status.valid { color: #2E7D32; }
+        .verify-status.invalid { color: #C62828; }
+        .verify-status .status-icon { font-size: 3rem; margin-bottom: 10px; }
+        .verify-status h2 { margin: 0 0 5px; }
+        .verify-details { padding: 0 20px 20px; }
+        .verify-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+        }
+        .verify-row:last-child { border-bottom: none; }
+        .verify-row .label { color: #666; font-size: 0.85rem; }
+        .verify-row .value { font-weight: 600; text-align: right; }
+        .verify-route {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            padding: 15px 0; font-size: 1.1rem; font-weight: 600;
+        }
+        .verify-route i { color: #394999; }
+        .verify-footer { text-align: center; padding: 15px 20px 25px; }
+        .verify-footer p { font-size: 0.8rem; color: #999; }
+        .loading { text-align: center; padding: 60px 20px; }
+        .loading i { font-size: 2rem; color: #394999; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <div class="verify-container">
+                <div id="loadingState" class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p style="margin-top:15px">Verifying ticket...</p>
+                </div>
+
+                <div id="verifyResult" style="display:none">
+                    <div class="verify-card">
+                        <div class="verify-header">
+                            <div class="bus-icon"><i class="fas fa-bus"></i></div>
+                            <h1>Somaliland Express</h1>
+                            <p>Ticket Verification</p>
+                        </div>
+
+                        <div class="verify-status" id="statusSection">
+                            <div class="status-icon" id="statusIcon"></div>
+                            <h2 id="statusTitle"></h2>
+                            <p id="statusText"></p>
+                        </div>
+
+                        <div class="verify-route" id="routeSection" style="display:none">
+                            <span id="verifyFrom"></span>
+                            <i class="fas fa-long-arrow-alt-right"></i>
+                            <span id="verifyTo"></span>
+                        </div>
+
+                        <div class="verify-details" id="detailsSection" style="display:none">
+                            <div class="verify-row">
+                                <span class="label">Booking ID</span>
+                                <span class="value" id="verifyBookingId"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Passenger</span>
+                                <span class="value" id="verifyPassenger"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Travel Date</span>
+                                <span class="value" id="verifyDate"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Departure</span>
+                                <span class="value" id="verifyDepart"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Arrival</span>
+                                <span class="value" id="verifyArrive"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Seat(s)</span>
+                                <span class="value" id="verifySeats"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Payment</span>
+                                <span class="value" id="verifyPayment"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Total Paid</span>
+                                <span class="value" id="verifyTotal"></span>
+                            </div>
+                            <div class="verify-row">
+                                <span class="label">Status</span>
+                                <span class="value" id="verifyStatus"></span>
+                            </div>
+                        </div>
+
+                        <div class="verify-footer">
+                            <p>Somaliland Express Bus Transport</p>
+                            <p>Verified at <span id="verifyTime"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bookingId = {{ booking_id }};
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        async function verifyTicket() {
+            try {
+                const res = await fetch('/api/booking/' + bookingId);
+                const data = await res.json();
+
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('verifyResult').style.display = 'block';
+
+                if (data.error) {
+                    document.getElementById('statusSection').className = 'verify-status invalid';
+                    document.getElementById('statusIcon').innerHTML = '<i class="fas fa-times-circle"></i>';
+                    document.getElementById('statusTitle').textContent = 'Ticket Not Found';
+                    document.getElementById('statusText').textContent = 'This ticket does not exist in our system.';
+                    return;
+                }
+
+                const b = data.booking;
+                const parts = [b.origin, b.destination];
+
+                document.getElementById('statusSection').className = 'verify-status valid';
+                document.getElementById('statusIcon').innerHTML = '<i class="fas fa-check-circle"></i>';
+                document.getElementById('statusTitle').textContent = 'Valid Ticket';
+                document.getElementById('statusText').textContent = 'This ticket has been verified successfully.';
+
+                document.getElementById('routeSection').style.display = 'flex';
+                document.getElementById('verifyFrom').textContent = parts[0];
+                document.getElementById('verifyTo').textContent = parts[1];
+
+                document.getElementById('detailsSection').style.display = 'block';
+                document.getElementById('verifyBookingId').textContent = '#' + b.id;
+                document.getElementById('verifyPassenger').textContent = b.passenger_name;
+                document.getElementById('verifyDate').textContent = formatDate(b.travel_date);
+                document.getElementById('verifyDepart').textContent = b.departure_time;
+                document.getElementById('verifyArrive').textContent = b.arrival_time;
+                document.getElementById('verifySeats').textContent = b.seat_numbers;
+                document.getElementById('verifyPayment').textContent = (b.payment_method || '-').toUpperCase();
+                document.getElementById('verifyTotal').textContent = '$' + b.total_fare;
+                document.getElementById('verifyStatus').textContent = b.status.toUpperCase();
+
+                if (b.status !== 'confirmed') {
+                    document.getElementById('statusSection').className = 'verify-status invalid';
+                    document.getElementById('statusIcon').innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                    document.getElementById('statusTitle').textContent = 'Ticket ' + b.status.toUpperCase();
+                }
+
+                document.getElementById('verifyTime').textContent = new Date().toLocaleString();
+            } catch (err) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('verifyResult').style.display = 'block';
+                document.getElementById('statusSection').className = 'verify-status invalid';
+                document.getElementById('statusIcon').innerHTML = '<i class="fas fa-times-circle"></i>';
+                document.getElementById('statusTitle').textContent = 'Verification Failed';
+                document.getElementById('statusText').textContent = 'Could not verify ticket. Please try again.';
+            }
+        }
+
+        verifyTicket();
+    </script>
+</body>
+</html>

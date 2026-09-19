@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somaliland Express - Bus Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+        <div class="nav-right">
+            <div class="user-info" id="userInfo" style="display:none">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName"></span>
+                <a href="/profile" class="btn-link"><i class="fas fa-home"></i> Profile</a>
+                <a href="/my-bookings" class="btn-link"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+                <button class="btn-link logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+            <div id="loginTrigger">
+                <button class="btn btn-primary" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1>Soo dhoofi <span>Rakaabka</span> meel kasta oo Somaliland ah</h1>
+            <p>Book your bus ticket across Somaliland. Fast, safe, reliable.</p>
+        </div>
+    </div>
+
+    <section class="booking-section">
+        <div class="container">
+            <div class="booking-card">
+                <h2><i class="fas fa-route"></i> Select Your Route</h2>
+                <form id="routeForm" onsubmit="searchBuses(event)">
+                    <div class="route-selector">
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> From</label>
+                            <select id="originCity" required>
+                                <option value="">Select departure city</option>
+                            </select>
+                        </div>
+                        <div class="route-arrow" onclick="swapCities()">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-flag-checkered"></i> To</label>
+                            <select id="destCity" required>
+                                <option value="">Select destination city</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Date</label>
+                            <input type="date" id="travelDate" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg search-btn">
+                            <i class="fas fa-search"></i> Find Buses
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="cities-section">
+        <div class="container">
+            <h2 class="section-title">Destinations in Somaliland</h2>
+            <div class="cities-grid">
+                <div class="city-card" onclick="selectRoute('Hargeisa','Berbera')">
+                    <div class="city-icon"><i class="fas fa-anchor"></i></div>
+                    <h3>Berbera</h3>
+                    <p>Historic port city on the Gulf of Aden</p>
+                    <span class="city-tag">Popular Route</span>
+                </div>
+                <div class="city-card" onclick="selectRoute('Hargeisa','Burao')">
+                    <div class="city-icon"><i class="fas fa-mountain"></i></div>
+                    <h3>Burao</h3>
+                    <p>Commercial hub of Togdheer region</p>
+                </div>
+                <div class="city-card" onclick="selectRoute('Hargeisa','Erigavo')">
+                    <div class="city-icon"><i class="fas fa-tree"></i></div>
+                    <h3>Erigavo</h3>
+                    <p>Gateway to the mountains of Sanaag</p>
+                </div>
+                <div class="city-card" onclick="selectRoute('Hargeisa','Borama')">
+                    <div class="city-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>Borama</h3>
+                    <p>Education capital of Awdal region</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>WhatsApp Booking</h3>
+                    <p>Login with your name and WhatsApp number</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chair"></i></div>
+                    <h3>Choose Your Seat</h3>
+                    <p>Select your preferred seat before you travel</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <h3>Zaad / Edahab / Cash</h3>
+                    <p>Pay with mobile money or cash on boarding</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                    <h3>Real-time Schedule</h3>
+                    <p>See exact departure and arrival times</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Somaliland Express Bus Transport. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            <div class="modal-header">
+                <div class="modal-icon"><i class="fas fa-bus"></i></div>
+                <h2>Gal</h2>
+                <p>Enter your details to continue</p>
+            </div>
+            <form id="loginForm" onsubmit="doLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="loginName" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fab fa-whatsapp"></i> WhatsApp Number</label>
+                    <input type="tel" id="loginWhatsApp" placeholder="e.g. 61 1234567" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i> Login / Register
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        loadCities();
+        checkLogin();
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Taxi - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+        <div class="nav-right">
+            <div class="user-info" id="userInfo" style="display:none">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName"></span>
+                <a href="/profile" class="btn-link"><i class="fas fa-home"></i> Profile</a>
+                <button class="btn-link logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+            <div id="loginTrigger">
+                <button class="btn btn-primary" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <a href="/profile" class="back-link"><i class="fas fa-arrow-left"></i> Back to Profile</a>
+
+            <div class="route-banner">
+                <h2><i class="fas fa-taxi"></i> Book a Taxi</h2>
+            </div>
+
+            <div class="payment-container">
+                <div class="booking-summary-card">
+                    <h2><i class="fas fa-map-marker-alt"></i> Trip Details</h2>
+                    <form id="taxiForm" onsubmit="submitTaxiBooking(event)">
+                        <div class="form-group">
+                            <label><i class="fas fa-circle" style="color:var(--success);font-size:0.6rem"></i> Pickup Location</label>
+                            <input type="text" id="taxiPickup" placeholder="e.g. Hargeisa Central Market" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-map-pin" style="color:var(--danger)"></i> Drop-off Location</label>
+                            <input type="text" id="taxiDropoff" placeholder="e.g. Hargeisa Airport" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-car"></i> Taxi Type</label>
+                            <select id="taxiType" onchange="updateTaxiFare()">
+                                <option value="standard">Standard Taxi - $5</option>
+                                <option value="comfort">Comfort Taxi - $8</option>
+                                <option value="premium">Premium Taxi - $12</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-clock"></i> Schedule (optional)</label>
+                            <input type="datetime-local" id="taxiSchedule">
+                        </div>
+                        <div class="taxi-fare-display">
+                            <span>Estimated Fare</span>
+                            <strong id="taxiFareDisplay">$5</strong>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="taxiBookBtn">
+                            <i class="fas fa-check-circle"></i> Book Taxi
+                        </button>
+                    </form>
+                </div>
+
+                <div class="payment-method-card">
+                    <h2><i class="fas fa-credit-card"></i> Payment Method</h2>
+                    <div class="payment-options">
+                        <label class="payment-option" onclick="selectTaxiPayment('zaad')">
+                            <input type="radio" name="taxiPayment" value="zaad">
+                            <div class="option-content zaad-option">
+                                <div class="option-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <div class="option-info">
+                                    <h4>Zaad</h4>
+                                    <p>Telecom mobile money</p>
+                                </div>
+                                <div class="option-check"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                        </label>
+                        <label class="payment-option" onclick="selectTaxiPayment('edahab')">
+                            <input type="radio" name="taxiPayment" value="edahab">
+                            <div class="option-content edahab-option">
+                                <div class="option-icon"><i class="fas fa-wallet"></i></div>
+                                <div class="option-info">
+                                    <h4>Edahab</h4>
+                                    <p>Dahabshiil mobile money</p>
+                                </div>
+                                <div class="option-check"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                        </label>
+                        <label class="payment-option" onclick="selectTaxiPayment('cash')">
+                            <input type="radio" name="taxiPayment" value="cash">
+                            <div class="option-content cash-option">
+                                <div class="option-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                <div class="option-info">
+                                    <h4>Cash</h4>
+                                    <p>Pay when you arrive</p>
+                                </div>
+                                <div class="option-check"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="payment-ref-section" id="taxiRefSection" style="display:none">
+                        <div class="form-group">
+                            <label>Payment Reference Number</label>
+                            <input type="text" id="taxiPaymentRef" placeholder="Enter transaction reference">
+                        </div>
+                        <p class="payment-note">After sending money, enter the reference number from your SMS confirmation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            <div class="modal-header">
+                <div class="modal-icon"><i class="fas fa-taxi"></i></div>
+                <h2>Login Required</h2>
+                <p>Login to book a taxi</p>
+            </div>
+            <form id="loginForm" onsubmit="doLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="loginName" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fab fa-whatsapp"></i> WhatsApp Number</label>
+                    <input type="tel" id="loginWhatsApp" placeholder="e.g. 61 1234567" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i> Login / Register
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>checkLogin();</script>
+</body>
+</html>

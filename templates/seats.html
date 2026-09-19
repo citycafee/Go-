@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Seats - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+        <div class="nav-right">
+            <div class="user-info" id="userInfo" style="display:none">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+
+            <div class="bus-info-bar" id="busInfoBar">
+                <div class="bus-route-info">
+                    <span class="route-label" id="busRoute">Loading...</span>
+                </div>
+                <div class="bus-time-info">
+                    <span><i class="fas fa-calendar"></i> <span id="busDate">--</span></span>
+                    <span><i class="fas fa-clock"></i> <span id="busTime">--:--</span></span>
+                    <span><i class="fas fa-hourglass-half"></i> <span id="busDuration">-- min</span></span>
+                </div>
+            </div>
+
+            <div class="seat-selection-area">
+                <div class="bus-visual">
+                    <div class="bus-image-display">
+                        <img src="/static/images/bus-van.png" alt="Somaliland Express Bus" onerror="this.style.display='none'">
+                    </div>
+                    <div class="van-header">
+                        <div class="van-front-label">
+                            <i class="fas fa-wind"></i>
+                            <span>FRONT OF VAN</span>
+                        </div>
+                    </div>
+                    <div class="van-seats-grid" id="seatsGrid">
+                        <!-- Van seats rendered by JS -->
+                    </div>
+                    <div class="seats-summary" id="seatsSummary"></div>
+                </div>
+
+                <div class="seat-legend">
+                    <div class="legend-item"><span class="seat-box available"></span> Available</div>
+                    <div class="legend-item"><span class="seat-box selected"></span> Your Selection</div>
+                    <div class="legend-item"><span class="seat-box taken"></span> Taken</div>
+                </div>
+
+                <div class="selection-summary" id="selectionSummary" style="display:none">
+                    <h3>Your Selection</h3>
+                    <div class="selected-seats" id="selectedSeatsList"></div>
+                    <div class="fare-summary">
+                        <span>Seats: <strong id="seatCount">0</strong></span>
+                        <span>Price per seat: <strong id="seatPrice">$0</strong></span>
+                        <span class="total">Total: <strong id="totalFare">$0</strong></span>
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" onclick="proceedToPayment()">
+                        <i class="fas fa-credit-card"></i> Proceed to Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>loadSeats();</script>
+</body>
+</html>

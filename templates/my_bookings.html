@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+        <div class="nav-right">
+            <div class="user-info" id="userInfo" style="display:none">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <h1 class="page-title"><i class="fas fa-ticket-alt"></i> My Bookings</h1>
+            <div class="bookings-list" id="bookingsList">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading bookings...
+                </div>
+            </div>
+            <div class="no-bookings" id="noBookings" style="display:none">
+                <i class="fas fa-ticket-alt"></i>
+                <h3>No Bookings Yet</h3>
+                <p>You haven't booked any tickets yet.</p>
+                <a href="/" class="btn btn-primary"><i class="fas fa-bus"></i> Book Now</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>loadMyBookings();</script>
+</body>
+</html>

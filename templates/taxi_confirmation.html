@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Booked - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="success-animation">
+                    <div class="check-circle" style="background:#FFC107"><i class="fas fa-taxi"></i></div>
+                </div>
+                <h1 class="success-title" style="color:#FFC107">Taxi Booked!</h1>
+                <p class="success-subtitle">Your taxi is on its way</p>
+
+                <div class="ticket-qr-layout">
+                    <div class="saveable-ticket" id="saveableTicket">
+                        <div class="ticket-print-header" style="background:linear-gradient(135deg,#E65100,#FF8F00)">
+                            <div class="ticket-print-brand">
+                                <i class="fas fa-taxi"></i>
+                                <span>Somaliland Express Taxi</span>
+                            </div>
+                            <div class="ticket-print-id">#<span id="taxiId">-</span></div>
+                        </div>
+                        <div class="ticket-print-route">
+                            <div class="route-from">
+                                <i class="fas fa-circle"></i>
+                                <span id="taxiPickup">-</span>
+                            </div>
+                            <div class="route-line"><i class="fas fa-long-arrow-alt-right"></i></div>
+                            <div class="route-to">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="taxiDropoff">-</span>
+                            </div>
+                        </div>
+                        <div class="ticket-print-grid" style="grid-template-columns:1fr 1fr">
+                            <div class="ticket-print-item">
+                                <small>Type</small>
+                                <strong id="taxiType">-</strong>
+                            </div>
+                            <div class="ticket-print-item">
+                                <small>Passenger</small>
+                                <strong id="taxiPassenger">-</strong>
+                            </div>
+                            <div class="ticket-print-item">
+                                <small>Payment</small>
+                                <strong id="taxiPayment">-</strong>
+                            </div>
+                            <div class="ticket-print-item">
+                                <small>Status</small>
+                                <strong id="taxiStatus">CONFIRMED</strong>
+                            </div>
+                        </div>
+                        <div class="ticket-print-total">
+                            <span>Total Fare</span>
+                            <strong id="taxiTotal">$0</strong>
+                        </div>
+                        <div class="ticket-print-footer">
+                            <p>Somaliland Express Taxi Service</p>
+                            <p>Our driver will contact you shortly.</p>
+                        </div>
+                    </div>
+
+                    <div class="qr-standalone-card">
+                        <div class="qr-card-header" style="background:linear-gradient(135deg,#E65100,#FF8F00)">
+                            <i class="fas fa-qrcode"></i>
+                            <span>Scan to Verify</span>
+                        </div>
+                        <div class="qr-card-body">
+                            <img id="qrcode-img" src="" alt="QR Code" style="border:8px solid #f0f0f0;border-radius:12px;">
+                            <p class="qr-instruction">Scan this QR code to verify your taxi booking</p>
+                            <div class="qr-booking-id" style="background:#FFF3E0;color:#E65100">Booking #<span id="qrBookingId">-</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="/profile" class="btn btn-primary"><i class="fas fa-home"></i> Profile</a>
+                    <a href="/my-bookings" class="btn btn-outline"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>loadTaxiConfirmation();</script>
+</body>
+</html>

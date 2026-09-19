@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+        <div class="nav-right">
+            <div class="user-info" id="userInfo">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName"></span>
+                <a href="/my-bookings" class="btn-link"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+                <button class="btn-link logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h1 id="profileName">Welcome</h1>
+                <p id="profilePhone"><i class="fab fa-whatsapp"></i> -</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon bus-stat"><i class="fas fa-bus"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statBuses">0</span>
+                        <span class="stat-label">Bus Trips</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon taxi-stat"><i class="fas fa-taxi"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statTaxis">0</span>
+                        <span class="stat-label">Taxi Rides</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon delivery-stat"><i class="fas fa-motorcycle"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statDeliveries">0</span>
+                        <span class="stat-label">Deliveries</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon total-stat"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statTotal">$0</span>
+                        <span class="stat-label">Total Spent</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <!-- Bus Service -->
+                <div class="service-card" onclick="window.location.href='/'">
+                    <div class="service-icon bus-service">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <h3>Bus Booking</h3>
+                    <p>Travel across Somaliland by bus. Choose your seat, pay easily with Zaad, Edahab or cash.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Multiple routes</li>
+                        <li><i class="fas fa-check"></i> Seat selection</li>
+                        <li><i class="fas fa-check"></i> Real-time schedule</li>
+                    </ul>
+                    <div class="service-action">
+                        <span class="btn btn-primary">Book Bus <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+
+                <!-- Taxi Service -->
+                <div class="service-card" onclick="window.location.href='/taxi'">
+                    <div class="service-icon taxi-service">
+                        <i class="fas fa-taxi"></i>
+                    </div>
+                    <h3>Taxi Booking</h3>
+                    <p>Get a taxi ride anywhere in the city. Fast, affordable, and reliable door-to-door service.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Door-to-door pickup</li>
+                        <li><i class="fas fa-check"></i> Standard & premium options</li>
+                        <li><i class="fas fa-check"></i> Schedule for later</li>
+                    </ul>
+                    <div class="service-action">
+                        <span class="btn btn-primary">Book Taxi <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+
+                <!-- Delivery Service -->
+                <div class="service-card" onclick="window.location.href='/delivery'">
+                    <div class="service-icon delivery-service">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <h3>Motorbike Delivery</h3>
+                    <p>Send packages anywhere fast. Motorbike delivery for documents, parcels, and goods.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Same-day delivery</li>
+                        <li><i class="fas fa-check"></i> Real-time tracking</li>
+                        <li><i class="fas fa-check"></i> Safe & secure</li>
+                    </ul>
+                    <div class="service-action">
+                        <span class="btn btn-primary">Send Delivery <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="quick-actions">
+                <a href="/my-bookings" class="quick-action-card">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>My Bus Bookings</span>
+                </a>
+                <a href="#" class="quick-action-card" onclick="loadMyTaxis()">
+                    <i class="fas fa-taxi"></i>
+                    <span>My Taxi Rides</span>
+                </a>
+                <a href="#" class="quick-action-card" onclick="loadMyDeliveries()">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>My Deliveries</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Somaliland Express. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>loadProfile();</script>
+</body>
+</html>

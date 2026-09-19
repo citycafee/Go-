@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Somaliland Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-bus"></i></div>
+            <div class="brand-text">Somaliland <span>Express</span></div>
+        </a>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+
+            <div class="payment-container">
+                <div class="booking-summary-card">
+                    <h2><i class="fas fa-receipt"></i> Booking Summary</h2>
+                    <div class="summary-details">
+                        <div class="summary-row"><span>Route</span><strong id="summaryRoute">-</strong></div>
+                        <div class="summary-row"><span>Date</span><strong id="summaryDate">-</strong></div>
+                        <div class="summary-row"><span>Departure</span><strong id="summaryDepart">-</strong></div>
+                        <div class="summary-row"><span>Arrival</span><strong id="summaryArrive">-</strong></div>
+                        <div class="summary-row"><span>Seats</span><strong id="summarySeats">-</strong></div>
+                        <div class="summary-row total-row"><span>Total Fare</span><strong id="summaryTotal">-</strong></div>
+                    </div>
+                </div>
+
+                <div class="payment-method-card">
+                    <h2><i class="fas fa-wallet"></i> Payment Method</h2>
+
+                    <div class="payment-options">
+                        <label class="payment-option" onclick="selectPayment('zaad')">
+                            <input type="radio" name="payment" value="zaad">
+                            <div class="option-content zaad-option">
+                                <div class="option-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <div class="option-info">
+                                    <h4>Zaad</h4>
+                                    <p>Send fare to <strong>063 4251661</strong></p>
+                                </div>
+                                <div class="option-check"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                        </label>
+                        <label class="payment-option" onclick="selectPayment('edahab')">
+                            <input type="radio" name="payment" value="edahab">
+                            <div class="option-content edahab-option">
+                                <div class="option-icon"><i class="fas fa-money-check-alt"></i></div>
+                                <div class="option-info">
+                                    <h4>Edahab</h4>
+                                    <p>Send fare to <strong>063 4251661</strong></p>
+                                </div>
+                                <div class="option-check"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                        </label>
+                        <label class="payment-option" onclick="selectPayment('cash')">
+                            <input type="radio" name="payment" value="cash">
+                            <div class="option-content cash-option">
+                                <div class="option-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                <div class="option-info">
+                                    <h4>Cash</h4>
+                                    <p>Pay when you board the bus</p>
+                                </div>
+                                <div class="option-check"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="payment-ref-section" id="paymentRefSection" style="display:none">
+                        <div class="form-group">
+                            <label><i class="fas fa-hashtag"></i> Payment Reference / Transaction ID</label>
+                            <input type="text" id="paymentRef" placeholder="Enter Zaad/Edahab transaction reference">
+                        </div>
+                        <p class="payment-note">After sending payment, enter the reference number here</p>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg btn-block" id="confirmBtn" onclick="confirmBooking()">
+                        <i class="fas fa-check-circle"></i> Confirm Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>loadPaymentPage();</script>
+</body>
+</html>
