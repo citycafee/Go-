@@ -67,6 +67,7 @@ function loadBuses(){
   var busList=document.getElementById('busList'),noBuses=document.getElementById('noBuses');
   var allBookings=getBookings();
   if(!routeBuses.length){busList.style.display='none';noBuses.style.display='block';return}
+  busList.style.display='flex';noBuses.style.display='none';
   busList.innerHTML=routeBuses.map(function(b){
     var booked=allBookings.filter(function(x){return x.bus_id===b.id&&x.date===date&&x.status==='confirmed'});
     var bookedCount=0;booked.forEach(function(x){bookedCount+=x.seats.split(',').length});
@@ -326,15 +327,22 @@ function loadMyBookings(){
   var all=getBookings().filter(function(b){return b.whatsapp===u.whatsapp}).reverse();
   var list=document.getElementById('bookingsList'),no=document.getElementById('noBookings');
   if(!all.length){list.style.display='none';no.style.display='block';return}
+  list.style.display='flex';no.style.display='none';
   list.innerHTML=all.map(function(b){
     return '<div class="booking-card-item"><div class="booking-card-icon"><i class="fas fa-bus"></i></div><div class="booking-card-details"><div class="booking-card-route">'+b.origin+' to '+b.destination+'</div><div class="booking-card-info"><span><i class="fas fa-calendar"></i> '+formatDate(b.date)+'</span><span><i class="fas fa-clock"></i> '+b.departure+'</span><span><i class="fas fa-chair"></i> Seats: '+b.seats+'</span></div></div><span class="booking-card-status '+b.status+'">'+b.status+'</span><div class="booking-card-fare"><div class="amount">$'+b.fare+'</div><div class="method">'+b.payment+'</div></div></div>';
   }).join('');
 }
 
+function initialsOf(name){
+  if(!name)return'';
+  return name.trim().split(/\s+/).slice(0,2).map(function(w){return w[0]}).join('').toUpperCase();
+}
 function loadProfile(){
   checkLogin();var u=getUser();if(!u)return go('home');
   document.getElementById('profileName').textContent='Welcome, '+u.full_name;
   document.getElementById('profilePhone').innerHTML='<i class="fab fa-whatsapp"></i> '+u.whatsapp;
+  var av=document.getElementById('profileAvatar');
+  if(av){var ini=initialsOf(u.full_name);av.innerHTML=(ini?'<span class="avatar-initials">'+ini+'</span>':'<i class="fas fa-user"></i>')+'<div class="avatar-ring"></div>'}
   var busBookings=getBookings().filter(function(b){return b.whatsapp===u.whatsapp});
   var taxiBookings=getTaxiBookings().filter(function(b){return b.whatsapp===u.whatsapp});
   var delBookings=getDeliveryBookings().filter(function(b){return b.whatsapp===u.whatsapp});
@@ -343,6 +351,43 @@ function loadProfile(){
   document.getElementById('statDeliveries').textContent=delBookings.length;
   var total=busBookings.reduce(function(s,b){return s+b.fare},0)+taxiBookings.reduce(function(s,b){return s+b.fare},0)+delBookings.reduce(function(s,b){return s+b.fare},0);
   document.getElementById('statTotal').textContent='$'+total;
+  renderRecentActivity(busBookings,taxiBookings,delBookings);
+}
+function renderRecentActivity(busBookings,taxiBookings,delBookings){
+  var el=document.getElementById('recentActivity');if(!el)return;
+  var items=[];
+  busBookings.forEach(function(b){items.push({type:'bus',icon:'fa-bus',title:(b.origin||'')+' \u2192 '+(b.destination||''),meta:formatDate(b.date)+' · '+(b.departure||''),fare:b.fare,sort:b.date||''})});
+  taxiBookings.forEach(function(b){items.push({type:'taxi',icon:'fa-taxi',title:(b.pickup||'')+' \u2192 '+(b.dropoff||''),meta:'Taxi · '+(b.type||'standard'),fare:b.fare,sort:b.id})});
+  delBookings.forEach(function(b){items.push({type:'delivery',icon:'fa-motorcycle',title:(b.pickup||'')+' \u2192 '+(b.dropoff||''),meta:'Delivery · '+(b.item||''),fare:b.fare,sort:b.id})});
+  if(!items.length){el.innerHTML='<div class="recent-empty"><i class="fas fa-history"></i><p>No trips yet — book your first ride</p><a href="#home" class="btn btn-primary btn-sm">Book Now</a></div>';return}
+  items=items.slice(-5).reverse();
+  el.innerHTML=items.map(function(it){
+    return '<a href="#bookings" class="recent-item"><div class="recent-icon '+it.type+'"><i class="fas '+it.icon+'"></i></div><div class="recent-info"><strong>'+it.title+'</strong><small>'+it.meta+'</small></div><div class="recent-fare">$'+it.fare+'</div></a>';
+  }).join('');
+}
+function openEditProfile(){
+  var u=getUser();if(!u)return;
+  document.getElementById('editName').value=u.full_name||'';
+  document.getElementById('editWhatsApp').value=u.whatsapp||'';
+  document.getElementById('editProfileModal').classList.add('active');
+}
+function closeEditProfile(){document.getElementById('editProfileModal').classList.remove('active')}
+function saveEditProfile(e){
+  e.preventDefault();
+  var name=document.getElementById('editName').value.trim();
+  var wa=document.getElementById('editWhatsApp').value.trim();
+  if(!name||!wa)return alert('Name and WhatsApp required');
+  var u=getUser()||{};
+  var oldWa=u.whatsapp;
+  u.full_name=name;u.whatsapp=wa;setUser(u);
+  if(oldWa&&oldWa!==wa){
+    ['se_bus_bookings','se_taxi_bookings','se_delivery_bookings'].forEach(function(k){
+      var list=JSON.parse(localStorage.getItem(k)||'[]');
+      list.forEach(function(b){if(b.whatsapp===oldWa)b.whatsapp=wa});
+      localStorage.setItem(k,JSON.stringify(list));
+    });
+  }
+  closeEditProfile();loadProfile();checkLogin();
 }
 
 
@@ -366,14 +411,14 @@ function submitTaxiBooking(e){
 function loadTaxiConfirmation(){
   var b=JSON.parse(localStorage.getItem('se_last_taxi')||'null');if(!b)return go('home');
   document.getElementById('taxiId').textContent=b.id;
-  document.getElementById('taxiPickup').textContent=b.pickup;
-  document.getElementById('taxiDropoff').textContent=b.dropoff;
-  document.getElementById('taxiType').textContent=(b.type||'standard').toUpperCase();
+  document.getElementById('taxiTicketPickup').textContent=b.pickup;
+  document.getElementById('taxiTicketDropoff').textContent=b.dropoff;
+  document.getElementById('taxiTicketType').textContent=(b.type||'standard').toUpperCase();
   document.getElementById('taxiPassenger').textContent=b.name;
-  document.getElementById('taxiPayment').textContent=(b.payment||'').toUpperCase();
+  document.getElementById('taxiTicketPayment').textContent=(b.payment||'').toUpperCase();
   document.getElementById('taxiTotal').textContent='$'+b.fare;
-  document.getElementById('qrBookingId').textContent=b.id;
-  generateQR('qrcode-img','SOMALAND EXPRESS TAXI\nBooking: #'+b.id+'\nPickup: '+b.pickup+'\nDropoff: '+b.dropoff+'\nType: '+(b.type||'').toUpperCase()+'\nPassenger: '+b.name+'\nPayment: '+(b.payment||'').toUpperCase()+'\nTotal: $'+b.fare,'#E65100');
+  document.getElementById('taxiQrBookingId').textContent=b.id;
+  generateQR('taxiQrImg','SOMALAND EXPRESS TAXI\nBooking: #'+b.id+'\nPickup: '+b.pickup+'\nDropoff: '+b.dropoff+'\nType: '+(b.type||'').toUpperCase()+'\nPassenger: '+b.name+'\nPayment: '+(b.payment||'').toUpperCase()+'\nTotal: $'+b.fare,'#E65100');
 }
 
 var deliveryPaymentMethod='';
@@ -393,15 +438,15 @@ function submitDeliveryBooking(e){
 function loadDeliveryConfirmation(){
   var b=JSON.parse(localStorage.getItem('se_last_delivery')||'null');if(!b)return go('home');
   document.getElementById('deliveryId').textContent=b.id;
-  document.getElementById('deliveryPickup').textContent=b.pickup;
-  document.getElementById('deliveryDropoff').textContent=b.dropoff;
+  document.getElementById('deliveryTicketPickup').textContent=b.pickup;
+  document.getElementById('deliveryTicketDropoff').textContent=b.dropoff;
   document.getElementById('deliverySender').textContent=b.name;
   document.getElementById('deliveryRecipient').textContent=b.recipient;
   document.getElementById('deliveryItem').textContent=b.item;
-  document.getElementById('deliveryPayment').textContent=(b.payment||'').toUpperCase();
+  document.getElementById('deliveryTicketPayment').textContent=(b.payment||'').toUpperCase();
   document.getElementById('deliveryTotal').textContent='$'+b.fare;
-  document.getElementById('qrBookingId').textContent=b.id;
-  generateQR('qrcode-img','SOMALAND EXPRESS DELIVERY\nBooking: #'+b.id+'\nPickup: '+b.pickup+'\nDropoff: '+b.dropoff+'\nSender: '+b.name+'\nRecipient: '+b.recipient+'\nItem: '+b.item+'\nPayment: '+(b.payment||'').toUpperCase()+'\nFee: $'+b.fare,'#1B5E20');
+  document.getElementById('deliveryQrBookingId').textContent=b.id;
+  generateQR('deliveryQrImg','SOMALAND EXPRESS DELIVERY\nBooking: #'+b.id+'\nPickup: '+b.pickup+'\nDropoff: '+b.dropoff+'\nSender: '+b.name+'\nRecipient: '+b.recipient+'\nItem: '+b.item+'\nPayment: '+(b.payment||'').toUpperCase()+'\nFee: $'+b.fare,'#1B5E20');
 }
 
 function loadVerify(){
