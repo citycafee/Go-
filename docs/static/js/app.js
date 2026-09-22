@@ -528,17 +528,30 @@ function loadVerify(){
 
 /* ===== APPLICATION MANAGEMENT (ADMIN) ===== */
 function isAdminUnlocked(){return sessionStorage.getItem('se_admin')==='1'}
+function getAdminUser(){return localStorage.getItem('se_admin_user')||'admin'}
 function getAdminPass(){return localStorage.getItem('se_admin_pass')||'admin123'}
 function setAdminUnlocked(on){
   if(on)sessionStorage.setItem('se_admin','1');
   else sessionStorage.removeItem('se_admin');
 }
+function adminShowError(msg){
+  var el=document.getElementById('adminLoginError');
+  if(!el)return;
+  if(!msg){el.style.display='none';el.textContent='';return}
+  el.style.display='block';el.textContent=msg;
+}
 function adminUnlock(e){
   e.preventDefault();
+  var u=document.getElementById('adminUsername').value.trim();
   var p=document.getElementById('adminPasscode').value;
-  if(p!==getAdminPass())return alert('Incorrect passcode');
+  if(!u||!p){adminShowError('Username and password required');return}
+  if(u!==getAdminUser()||p!==getAdminPass()){
+    adminShowError('Invalid username or password');
+    return;
+  }
   setAdminUnlocked(true);
   document.getElementById('adminPasscode').value='';
+  adminShowError('');
   renderAdminShell();
 }
 function adminLock(){
@@ -546,17 +559,19 @@ function adminLock(){
   renderAdminShell();
 }
 function loadAdmin(){
-  if(!getUser())return;
   renderAdminShell();
 }
 function renderAdminShell(){
   var unlock=document.getElementById('adminUnlock'),dash=document.getElementById('adminDashboard');
   if(!unlock||!dash)return;
+  var u=document.getElementById('adminUsername');
+  if(u&&!u.value)u.value=getAdminUser();
   if(isAdminUnlocked()){
     unlock.style.display='none';dash.style.display='block';
+    adminShowError('');
     adminTab(window._adminTab||'overview');
   }else{
-    unlock.style.display='block';dash.style.display='none';
+    unlock.style.display='flex';dash.style.display='none';
   }
 }
 function adminTab(tab){
@@ -703,11 +718,12 @@ function adminUpdateBusFare(input){
 function renderAdminSettings(){
   document.getElementById('adminPanelSettings').innerHTML=''
   +'<div class="admin-cards-row">'
-  +'<div class="admin-card"><h3><i class="fas fa-key"></i> Admin passcode</h3>'
+  +'<div class="admin-card"><h3><i class="fas fa-user-shield"></i> Admin login</h3>'
   +'<form onsubmit="adminChangePass(event)">'
-  +'<div class="form-group"><label>Current passcode</label><input type="password" id="adminOldPass" required></div>'
-  +'<div class="form-group"><label>New passcode</label><input type="password" id="adminNewPass" minlength="4" required></div>'
-  +'<button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update passcode</button>'
+  +'<div class="form-group"><label>Username</label><input type="text" id="adminSetUser" value="'+getAdminUser().replace(/"/g,'&quot;')+'" required></div>'
+  +'<div class="form-group"><label>Current password</label><input type="password" id="adminOldPass" required></div>'
+  +'<div class="form-group"><label>New password</label><input type="password" id="adminNewPass" minlength="4" required></div>'
+  +'<button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update login</button>'
   +'</form></div>'
   +'<div class="admin-card"><h3><i class="fas fa-file-export"></i> Data</h3>'
   +'<p class="admin-settings-note">Export all bookings and settings as JSON backup.</p>'
@@ -725,14 +741,17 @@ function renderAdminSettings(){
 }
 function adminChangePass(e){
   e.preventDefault();
+  var newU=document.getElementById('adminSetUser').value.trim();
   var old=document.getElementById('adminOldPass').value;
   var neu=document.getElementById('adminNewPass').value;
-  if(old!==getAdminPass())return alert('Current passcode is wrong');
-  if(!neu||neu.length<4)return alert('New passcode min 4 chars');
+  if(!newU)return alert('Username required');
+  if(old!==getAdminPass())return alert('Current password is wrong');
+  if(!neu||neu.length<4)return alert('New password min 4 chars');
+  localStorage.setItem('se_admin_user',newU);
   localStorage.setItem('se_admin_pass',neu);
   document.getElementById('adminOldPass').value='';
   document.getElementById('adminNewPass').value='';
-  alert('Passcode updated');
+  alert('Admin login updated');
 }
 function exportAdminData(){
   var data={

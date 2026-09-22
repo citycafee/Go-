@@ -2505,6 +2505,18 @@ a, button { touch-action: manipulation; }
 .admin-unlock-card > p { color: var(--gray); font-size: 0.9rem; margin-bottom: 18px; }
 .admin-unlock-card form { text-align: left; }
 .admin-hint { margin-top: 14px; font-size: 0.75rem; color: var(--gray); margin-bottom: 0; }
+.admin-hint a { color: var(--primary); font-weight: 600; text-decoration: none; }
+.admin-hint a:hover { text-decoration: underline; }
+.admin-form-error {
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #FFCDD2;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
 .admin-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
 .admin-title { margin-bottom: 4px; }
 .admin-sub { color: var(--gray); font-size: 0.85rem; margin: 0; }
