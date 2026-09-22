@@ -484,8 +484,18 @@ function router(){
   showPage(page);checkLogin();
   if(page==='home')loadCities();
   else if(page==='buses')loadBuses();
-  else if(page==='seats'){bookingState.selectedSeats=[];loadSeats()}
-  else if(page==='payment')loadPaymentPage();
+  else if(page==='seats'){
+    if(bookingState.bus&&bookingState.origin){go('buses?origin='+encodeURIComponent(bookingState.origin)+'&dest='+encodeURIComponent(bookingState.destination)+'&date='+bookingState.date);setTimeout(function(){if(bookingState.bus)selectBus(bookingState.bus_id)},80)}
+    else{go('home')}
+  }
+  else if(page==='payment'){
+    if(bookingState.bus&&bookingState.selectedSeats&&bookingState.selectedSeats.length){showPage('buses');modalProceedToPayment()}
+    else if(getParam('bus_id')&&getParam('seats')){
+      loadPaymentPage();
+      setTimeout(function(){modalProceedToPayment()},50);
+    }
+    else{go('home')}
+  }
   else if(page==='confirmation')loadConfirmation();
   else if(page==='profile')loadProfile();
   else if(page==='bookings')loadMyBookings();

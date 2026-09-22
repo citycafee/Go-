@@ -161,7 +161,7 @@ function updateSelectionSummary(){
 
 function proceedToPayment(){
   if(!bookingState.selectedSeats.length)return alert('Select seats first');
-  go('payment?bus_id='+bookingState.bus_id+'&date='+bookingState.date+'&seats='+bookingState.selectedSeats.join(','));
+  modalProceedToPayment();
 }
 
 
