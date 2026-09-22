@@ -137,7 +137,7 @@ function updateSelectionSummary(){
 
 function proceedToPayment(){
   if(!bookingState.selectedSeats.length)return alert('Select seats first');
-  modalProceedToPayment();
+  go('payment?bus_id='+bookingState.bus_id+'&date='+bookingState.date+'&seats='+bookingState.selectedSeats.join(','));
 }
 
 
@@ -339,7 +339,7 @@ function initialsOf(name){
 }
 function loadProfile(){
   checkLogin();var u=getUser();if(!u)return go('home');
-  document.getElementById('profileName').textContent=u.full_name;
+  document.getElementById('profileName').textContent='Welcome, '+u.full_name;
   document.getElementById('profilePhone').innerHTML='<i class="fab fa-whatsapp"></i> '+u.whatsapp;
   var av=document.getElementById('profileAvatar');
   if(av){var ini=initialsOf(u.full_name);av.innerHTML=(ini?'<span class="avatar-initials">'+ini+'</span>':'<i class="fas fa-user"></i>')+'<div class="avatar-ring"></div>'}
