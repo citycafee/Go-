@@ -496,8 +496,6 @@ function router(){
 window.addEventListener('hashchange',function(){closeSeatModal();closePaymentModal();closeRouteModal();if(typeof closeEditProfile==='function')closeEditProfile();router()});
 window.addEventListener('load',function(){
   if(!location.hash)location.hash='home';
-  var u=getUser();
-  if(!u){openLoginModal()}
   router();checkLogin();
 });
 document.getElementById('seatModal').addEventListener('click',function(e){if(e.target===this)closeSeatModal()});
