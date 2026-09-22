@@ -122,19 +122,43 @@ body.profile-active .navbar{display:none}
 <div class="page-content"><div class="container"><div class="confirmation-container">
 <div class="success-animation"><div class="check-circle"><i class="fas fa-check"></i></div></div>
 <h1 class="success-title">Booking Confirmed!</h1>
-<p class="success-subtitle">Show this ticket when you board</p>
-<div class="ticket-qr-layout">
+<p class="success-subtitle">Your ticket is ready</p>
+<div class="action-buttons"><button type="button" class="btn btn-primary" onclick="openTicketPopup()"><i class="fas fa-ticket-alt"></i> View Ticket</button><a href="#home" class="btn btn-outline"><i class="fas fa-home"></i> Home</a><a href="#bookings" class="btn btn-outline"><i class="fas fa-history"></i> My Bookings</a></div>
+</div></div></div>
+</div>
+
+<!-- TICKET + QR POPUP -->
+<div class="modal-overlay ticket-popup" id="ticketPopup" onclick="if(event.target===this)closeTicketPopup()">
+<div class="modal-card ticket-popup-card">
+<button class="modal-close" onclick="closeTicketPopup()">&times;</button>
+<div class="ticket-popup-header">
+<div class="ticket-popup-icon"><i class="fas fa-check"></i></div>
+<div>
+<h3>Booking Confirmed</h3>
+<p>Show this ticket when you board</p>
+</div>
+</div>
+<div class="ticket-popup-body">
 <div class="saveable-ticket" id="saveableTicket">
 <div class="ticket-print-header"><div class="ticket-print-brand"><i class="fas fa-bus"></i><span>Somaliland Express</span></div><div class="ticket-print-id">#<span id="ticketId">-</span></div></div>
 <div class="ticket-print-route"><div class="route-from"><i class="fas fa-circle"></i><span id="ticketFrom">-</span></div><div class="route-line"><i class="fas fa-long-arrow-alt-right"></i></div><div class="route-to"><i class="fas fa-map-marker-alt"></i><span id="ticketTo">-</span></div></div>
 <div class="ticket-print-grid"><div class="ticket-print-item"><small>Date</small><strong id="ticketDate">-</strong></div><div class="ticket-print-item"><small>Departure</small><strong id="ticketDepart">-</strong></div><div class="ticket-print-item"><small>Arrival</small><strong id="ticketArrive">-</strong></div><div class="ticket-print-item"><small>Seats</small><strong id="ticketSeats">-</strong></div><div class="ticket-print-item"><small>Passenger</small><strong id="ticketPassenger">-</strong></div><div class="ticket-print-item"><small>Payment</small><strong id="ticketPayment">-</strong></div></div>
 <div class="ticket-print-total"><span>Total Paid</span><strong id="ticketTotal">$0</strong></div>
+<div class="ticket-popup-qr">
+<img id="qrcode-img" src="" alt="QR Code">
+<div class="ticket-popup-qr-meta">
+<div class="qr-booking-id">Booking #<span id="qrBookingId">-</span></div>
+<p class="qr-instruction">Scan to verify your ticket</p>
+</div>
+</div>
 <div class="ticket-print-footer"><p>Somaliland Express Bus Transport</p><p>Keep this ticket safe.</p></div>
 </div>
-<div class="qr-standalone-card"><div class="qr-card-header"><i class="fas fa-qrcode"></i><span>Scan to Verify</span></div><div class="qr-card-body"><img id="qrcode-img" src="" alt="QR Code" style="border:8px solid #f0f0f0;border-radius:12px"><p class="qr-instruction">Scan to verify your ticket</p><div class="qr-booking-id">Booking #<span id="qrBookingId">-</span></div></div></div>
 </div>
-<div class="action-buttons"><a href="#home" class="btn btn-primary"><i class="fas fa-home"></i> Home</a><a href="#bookings" class="btn btn-outline"><i class="fas fa-ticket-alt"></i> My Bookings</a></div>
-</div></div></div>
+<div class="ticket-popup-footer">
+<a href="#home" onclick="closeTicketPopup()" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+<a href="#bookings" onclick="closeTicketPopup()" class="btn btn-primary"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+</div>
+</div>
 </div>
 
 <!-- PROFILE -->
@@ -503,7 +527,7 @@ function router(){
   else if(page==='delivery-confirm')loadDeliveryConfirmation();
   else if(page==='verify')loadVerify();
 }
-window.addEventListener('hashchange',function(){closeSeatModal();closePaymentModal();closeRouteModal();if(typeof closeEditProfile==='function')closeEditProfile();router()});
+window.addEventListener('hashchange',function(){closeSeatModal();closePaymentModal();closeRouteModal();closeTicketPopup();if(typeof closeEditProfile==='function')closeEditProfile();router()});
 window.addEventListener('load',function(){
   if(!location.hash)location.hash='home';
   router();checkLogin();
@@ -511,6 +535,7 @@ window.addEventListener('load',function(){
 document.getElementById('seatModal').addEventListener('click',function(e){if(e.target===this)closeSeatModal()});
 document.getElementById('paymentModal').addEventListener('click',function(e){if(e.target===this)closePaymentModal()});
 document.getElementById('routeModal').addEventListener('click',function(e){if(e.target===this)closeRouteModal()});
+document.getElementById('ticketPopup').addEventListener('click',function(e){if(e.target===this)closeTicketPopup()});
 </script>
 </body>
 </html>

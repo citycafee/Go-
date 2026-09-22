@@ -212,6 +212,20 @@ function loadConfirmation(){
   document.getElementById('ticketTotal').textContent='$'+b.fare;
   document.getElementById('qrBookingId').textContent=b.id;
   generateQR('qrcode-img','SOMALAND EXPRESS\nBooking: #'+b.id+'\nRoute: '+b.origin+' to '+b.destination+'\nDate: '+b.date+'\nDepart: '+b.departure+'\nSeats: '+b.seats+'\nPassenger: '+(u?u.full_name:'Guest')+'\nPayment: '+(b.payment||'').toUpperCase()+'\nTotal: $'+b.fare,'#1A237E');
+  openTicketPopup();
+}
+
+function openTicketPopup(){
+  var el=document.getElementById('ticketPopup');
+  if(!el)return;
+  el.classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeTicketPopup(){
+  var el=document.getElementById('ticketPopup');
+  if(!el)return;
+  el.classList.remove('active');
+  document.body.style.overflow='';
 }
 
 
