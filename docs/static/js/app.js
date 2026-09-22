@@ -525,3 +525,234 @@ function loadVerify(){
   document.getElementById('verifyStatus').textContent=b.status.toUpperCase();
   document.getElementById('verifyTime').textContent=new Date().toLocaleString();
 }
+
+/* ===== APPLICATION MANAGEMENT (ADMIN) ===== */
+function isAdminUnlocked(){return sessionStorage.getItem('se_admin')==='1'}
+function getAdminPass(){return localStorage.getItem('se_admin_pass')||'admin123'}
+function setAdminUnlocked(on){
+  if(on)sessionStorage.setItem('se_admin','1');
+  else sessionStorage.removeItem('se_admin');
+}
+function adminUnlock(e){
+  e.preventDefault();
+  var p=document.getElementById('adminPasscode').value;
+  if(p!==getAdminPass())return alert('Incorrect passcode');
+  setAdminUnlocked(true);
+  document.getElementById('adminPasscode').value='';
+  renderAdminShell();
+}
+function adminLock(){
+  setAdminUnlocked(false);
+  renderAdminShell();
+}
+function loadAdmin(){
+  if(!getUser())return;
+  renderAdminShell();
+}
+function renderAdminShell(){
+  var unlock=document.getElementById('adminUnlock'),dash=document.getElementById('adminDashboard');
+  if(!unlock||!dash)return;
+  if(isAdminUnlocked()){
+    unlock.style.display='none';dash.style.display='block';
+    adminTab(window._adminTab||'overview');
+  }else{
+    unlock.style.display='block';dash.style.display='none';
+  }
+}
+function adminTab(tab){
+  window._adminTab=tab;
+  document.querySelectorAll('.admin-tab').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===tab)});
+  var map={overview:'adminPanelOverview',bookings:'adminPanelBookings',fleet:'adminPanelFleet',settings:'adminPanelSettings'};
+  Object.keys(map).forEach(function(k){
+    var el=document.getElementById(map[k]);
+    if(el)el.style.display=k===tab?'block':'none';
+  });
+  if(tab==='overview')renderAdminOverview();
+  else if(tab==='bookings')renderAdminBookings();
+  else if(tab==='fleet')renderAdminFleet();
+  else if(tab==='settings')renderAdminSettings();
+}
+function sumFares(list){var t=0;list.forEach(function(x){if(x.status!=='cancelled')t+=(x.fare||0)});return t}
+function adminAllRows(){
+  var rows=[];
+  getBookings().forEach(function(b){rows.push({kind:'bus',id:b.id,status:b.status,name:b.name,whatsapp:b.whatsapp,detail:(b.origin||'')+' \u2192 '+(b.destination||''),sub:'Seats '+b.seats+' \u00b7 '+b.departure,fare:b.fare||0,payment:b.payment,date:b.date,raw:b})});
+  getTaxiBookings().forEach(function(b){rows.push({kind:'taxi',id:b.id,status:b.status,name:b.name,whatsapp:b.whatsapp,detail:(b.pickup||'')+' \u2192 '+(b.dropoff||''),sub:(b.type||'standard')+' taxi',fare:b.fare||0,payment:b.payment,date:b.schedule?String(b.schedule).split('T')[0]:'',raw:b})});
+  getDeliveryBookings().forEach(function(b){rows.push({kind:'delivery',id:b.id,status:b.status,name:b.name,whatsapp:b.whatsapp,detail:(b.pickup||'')+' \u2192 '+(b.dropoff||''),sub:b.item||'Package',fare:b.fare||0,payment:b.payment,date:b.date||'',raw:b})});
+  rows.reverse();
+  return rows;
+}
+function renderAdminOverview(){
+  var bus=getBookings(),taxi=getTaxiBookings(),del=getDeliveryBookings();
+  var active=function(l){return l.filter(function(x){return x.status==='confirmed'}).length};
+  var cancelled=function(l){return l.filter(function(x){return x.status==='cancelled'}).length};
+  var revenue=sumFares(bus)+sumFares(taxi)+sumFares(del);
+  var seats=0;bus.forEach(function(b){if(b.status==='confirmed')seats+=(b.seats||'').split(',').filter(Boolean).length});
+  var byPay={zaad:0,edahab:0,cash:0};
+  bus.concat(taxi,del).forEach(function(b){if(b.status!=='cancelled'&&byPay[b.payment]!=null)byPay[b.payment]+=(b.fare||0)});
+  var el=document.getElementById('adminPanelOverview');
+  el.innerHTML=''
+  +'<div class="admin-kpis">'
+  +'<div class="admin-kpi"><i class="fas fa-bus"></i><div><strong>'+bus.length+'</strong><span>Bus bookings</span></div></div>'
+  +'<div class="admin-kpi"><i class="fas fa-taxi"></i><div><strong>'+taxi.length+'</strong><span>Taxi bookings</span></div></div>'
+  +'<div class="admin-kpi"><i class="fas fa-motorcycle"></i><div><strong>'+del.length+'</strong><span>Deliveries</span></div></div>'
+  +'<div class="admin-kpi accent"><i class="fas fa-dollar-sign"></i><div><strong>$'+revenue+'</strong><span>Total revenue</span></div></div>'
+  +'<div class="admin-kpi"><i class="fas fa-chair"></i><div><strong>'+seats+'</strong><span>Seats sold</span></div></div>'
+  +'<div class="admin-kpi"><i class="fas fa-check-circle"></i><div><strong>'+(active(bus)+active(taxi)+active(del))+'</strong><span>Active</span></div></div>'
+  +'<div class="admin-kpi warn"><i class="fas fa-ban"></i><div><strong>'+(cancelled(bus)+cancelled(taxi)+cancelled(del))+'</strong><span>Cancelled</span></div></div>'
+  +'<div class="admin-kpi"><i class="fas fa-route"></i><div><strong>'+DB_ROUTES.length+'</strong><span>Routes</span></div></div>'
+  +'</div>'
+  +'<div class="admin-cards-row">'
+  +'<div class="admin-card"><h3><i class="fas fa-wallet"></i> Revenue by payment</h3>'
+  +'<div class="admin-bar-row"><span>Zaad</span><div class="admin-bar"><i style="width:'+Math.min(100,byPay.zaad*2)+'%"></i></div><strong>$'+byPay.zaad+'</strong></div>'
+  +'<div class="admin-bar-row"><span>Edahab</span><div class="admin-bar"><i style="width:'+Math.min(100,byPay.edahab*2)+'%"></i></div><strong>$'+byPay.edahab+'</strong></div>'
+  +'<div class="admin-bar-row"><span>Cash</span><div class="admin-bar"><i style="width:'+Math.min(100,byPay.cash*2)+'%"></i></div><strong>$'+byPay.cash+'</strong></div>'
+  +'</div>'
+  +'<div class="admin-card"><h3><i class="fas fa-bolt"></i> Quick actions</h3>'
+  +'<div class="admin-actions">'
+  +'<button type="button" class="btn btn-primary" onclick="adminTab(\'bookings\')"><i class="fas fa-list"></i> Manage bookings</button>'
+  +'<button type="button" class="btn btn-outline" onclick="adminTab(\'fleet\')"><i class="fas fa-bus"></i> Fleet &amp; routes</button>'
+  +'<button type="button" class="btn btn-outline" onclick="exportAdminData()"><i class="fas fa-download"></i> Export data</button>'
+  +'</div></div></div>';
+}
+function adminFilterRows(){
+  var kind=document.getElementById('adminFilterKind')?document.getElementById('adminFilterKind').value:'all';
+  var q=(document.getElementById('adminFilterQ')?document.getElementById('adminFilterQ').value:'').toLowerCase();
+  var rows=adminAllRows();
+  if(kind!=='all')rows=rows.filter(function(r){return r.kind===kind});
+  if(q)rows=rows.filter(function(r){
+    return String(r.id).indexOf(q)>-1||(r.name||'').toLowerCase().indexOf(q)>-1||(r.detail||'').toLowerCase().indexOf(q)>-1||(r.whatsapp||'').indexOf(q)>-1;
+  });
+  return rows;
+}
+function renderAdminBookings(){
+  var rows=adminFilterRows();
+  var kindIcons={bus:'fa-bus',taxi:'fa-taxi',delivery:'fa-motorcycle'};
+  var list=rows.map(function(r){
+    var canTicket=r.kind==='bus'&&r.status==='confirmed';
+    return '<div class="admin-row '+(r.status==='cancelled'?'is-cancelled':'')+'">'
+    +'<div class="admin-row-icon"><i class="fas '+(kindIcons[r.kind]||'fa-ticket-alt')+'"></i></div>'
+    +'<div class="admin-row-main"><div class="admin-row-title">#'+r.id+' \u00b7 '+r.detail+'</div>'
+    +'<div class="admin-row-sub">'+(r.sub||'')+' \u00b7 '+(r.name||'-')+' \u00b7 '+(r.whatsapp||'-')+(r.date?' \u00b7 '+formatDate(r.date):'')+'</div></div>'
+    +'<span class="booking-card-status '+r.status+'">'+r.status+'</span>'
+    +'<div class="admin-row-fare">$'+r.fare+'<small>'+((r.payment||'').toUpperCase())+'</small></div>'
+    +'<div class="admin-row-actions">'
+    +(canTicket?'<button type="button" class="btn btn-sm btn-outline" onclick="openBookingTicket('+r.id+')"><i class="fas fa-qrcode"></i></button>':'')
+    +(r.status==='confirmed'?'<button type="button" class="btn btn-sm btn-outline admin-danger" onclick="adminCancel(\''+r.kind+'\','+r.id+')"><i class="fas fa-ban"></i></button>':'')
+    +'</div></div>';
+  }).join('');
+  document.getElementById('adminPanelBookings').innerHTML=''
+  +'<div class="admin-filters">'
+  +'<select id="adminFilterKind" onchange="renderAdminBookings()"><option value="all">All types</option><option value="bus">Bus</option><option value="taxi">Taxi</option><option value="delivery">Delivery</option></select>'
+  +'<input type="search" id="adminFilterQ" placeholder="Search id, name, route..." oninput="renderAdminBookings()">'
+  +'</div>'
+  +(rows.length?('<div class="admin-rows">'+list+'</div>'):'<div class="admin-empty"><i class="fas fa-inbox"></i><p>No bookings match</p></div>');
+}
+function adminCancel(kind,id){
+  if(!confirm('Cancel booking #'+id+'?'))return;
+  if(kind==='bus'){
+    var b=getBookings();var x=b.find(function(i){return i.id===id});if(x)x.status='cancelled';saveBookings(b);
+  }else if(kind==='taxi'){
+    var t=getTaxiBookings();var y=t.find(function(i){return i.id===id});if(y)y.status='cancelled';saveTaxiBookings(t);
+  }else{
+    var d=getDeliveryBookings();var z=d.find(function(i){return i.id===id});if(z)z.status='cancelled';saveDeliveryBookings(d);
+  }
+  renderAdminBookings();
+  renderAdminOverview();
+}
+function renderAdminFleet(){
+  var routeRows=DB_ROUTES.map(function(r){
+    var buses=DB_BUSES.filter(function(b){return b.route_id===r.id});
+    return '<div class="admin-row">'
+    +'<div class="admin-row-icon"><i class="fas fa-route"></i></div>'
+    +'<div class="admin-row-main"><div class="admin-row-title">'+r.origin+' \u2192 '+r.destination+'</div>'
+    +'<div class="admin-row-sub">'+r.distance_km+' km \u00b7 ~'+r.duration_min+' min \u00b7 '+buses.length+' buses</div></div>'
+    +'<div class="admin-row-fare">$'+r.base_fare+'<small>base</small></div>'
+    +'<div class="admin-row-actions"><label class="admin-inline-fare">Fare $<input type="number" min="1" value="'+r.base_fare+'" data-route="'+r.id+'" onchange="adminUpdateRouteFare(this)"></label></div>'
+    +'</div>';
+  }).join('');
+  var busRows=DB_BUSES.map(function(b){
+    var r=getRoute(b.route_id);
+    return '<div class="admin-row compact">'
+    +'<div class="admin-row-icon small"><i class="fas fa-bus"></i></div>'
+    +'<div class="admin-row-main"><div class="admin-row-title">'+b.bus_number+' \u00b7 '+b.bus_name+'</div>'
+    +'<div class="admin-row-sub">'+(r?r.origin+' \u2192 '+r.destination:'-')+' \u00b7 '+b.departure_time+'-'+b.arrival_time+' \u00b7 '+b.total_seats+' seats</div></div>'
+    +'<div class="admin-row-fare">$'+b.fare+'<small>seat</small></div>'
+    +'<div class="admin-row-actions"><label class="admin-inline-fare">$<input type="number" min="1" value="'+b.fare+'" data-bus="'+b.id+'" onchange="adminUpdateBusFare(this)"></label></div>'
+    +'</div>';
+  }).join('');
+  document.getElementById('adminPanelFleet').innerHTML=''
+  +'<div class="admin-cards-row">'
+  +'<div class="admin-card"><h3><i class="fas fa-route"></i> Routes ('+DB_ROUTES.length+')</h3><div class="admin-rows">'+routeRows+'</div></div>'
+  +'<div class="admin-card"><h3><i class="fas fa-bus"></i> Buses ('+DB_BUSES.length+')</h3><div class="admin-rows">'+busRows+'</div></div>'
+  +'</div>';
+}
+function adminUpdateRouteFare(input){
+  var id=parseInt(input.getAttribute('data-route'),10);
+  var r=DB_ROUTES.find(function(x){return x.id===id});
+  if(!r)return;
+  var v=parseInt(input.value,10);if(!v||v<1){input.value=r.base_fare;return}
+  r.base_fare=v;renderAdminFleet();
+}
+function adminUpdateBusFare(input){
+  var id=parseInt(input.getAttribute('data-bus'),10);
+  var b=DB_BUSES.find(function(x){return x.id===id});
+  if(!b)return;
+  var v=parseInt(input.value,10);if(!v||v<1){input.value=b.fare;return}
+  b.fare=v;renderAdminFleet();
+}
+function renderAdminSettings(){
+  document.getElementById('adminPanelSettings').innerHTML=''
+  +'<div class="admin-cards-row">'
+  +'<div class="admin-card"><h3><i class="fas fa-key"></i> Admin passcode</h3>'
+  +'<form onsubmit="adminChangePass(event)">'
+  +'<div class="form-group"><label>Current passcode</label><input type="password" id="adminOldPass" required></div>'
+  +'<div class="form-group"><label>New passcode</label><input type="password" id="adminNewPass" minlength="4" required></div>'
+  +'<button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update passcode</button>'
+  +'</form></div>'
+  +'<div class="admin-card"><h3><i class="fas fa-file-export"></i> Data</h3>'
+  +'<p class="admin-settings-note">Export all bookings and settings as JSON backup.</p>'
+  +'<div class="admin-actions">'
+  +'<button type="button" class="btn btn-outline" onclick="exportAdminData()"><i class="fas fa-download"></i> Export JSON</button>'
+  +'<button type="button" class="btn btn-outline admin-danger" onclick="adminResetDemo()"><i class="fas fa-trash"></i> Clear bookings</button>'
+  +'</div></div>'
+  +'<div class="admin-card"><h3><i class="fas fa-info-circle"></i> App</h3>'
+  +'<div class="admin-settings-note"><p><strong>Brand:</strong> Somaliland Express</p>'
+  +'<p><strong>Version:</strong> v1.0</p>'
+  +'<p><strong>Payments:</strong> Zaad / Edahab / Cash</p>'
+  +'<p><strong>Number:</strong> 063 4251661</p>'
+  +'<p><strong>Support:</strong> WhatsApp</p></div></div>'
+  +'</div>';
+}
+function adminChangePass(e){
+  e.preventDefault();
+  var old=document.getElementById('adminOldPass').value;
+  var neu=document.getElementById('adminNewPass').value;
+  if(old!==getAdminPass())return alert('Current passcode is wrong');
+  if(!neu||neu.length<4)return alert('New passcode min 4 chars');
+  localStorage.setItem('se_admin_pass',neu);
+  document.getElementById('adminOldPass').value='';
+  document.getElementById('adminNewPass').value='';
+  alert('Passcode updated');
+}
+function exportAdminData(){
+  var data={
+    exported_at:new Date().toISOString(),
+    bus:getBookings(),
+    taxi:getTaxiBookings(),
+    delivery:getDeliveryBookings(),
+    routes:DB_ROUTES,
+    buses:DB_BUSES
+  };
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='somaliland-express-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+}
+function adminResetDemo(){
+  if(!confirm('Delete ALL bus, taxi, and delivery bookings on this device?'))return;
+  saveBookings([]);saveTaxiBookings([]);saveDeliveryBookings([]);
+  renderAdminOverview();renderAdminBookings();
+  alert('Bookings cleared');
+}

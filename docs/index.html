@@ -238,6 +238,11 @@ body.profile-active .navbar{display:none}
 <i class="fas fa-chevron-right menu-arrow"></i>
 </a>
 <div class="account-menu-divider" role="separator"></div>
+<a href="#admin" class="menu-item-mobile">
+<div class="menu-icon" style="background:#EDE7F6;color:#4527A0"><i class="fas fa-sliders-h"></i></div>
+<div class="menu-text"><span>Application Management</span><small>Admin dashboard &amp; fleet</small></div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
 <a href="https://wa.me/252634251661" target="_blank" rel="noopener" class="menu-item-mobile">
 <div class="menu-icon" style="background:#E7F8EF;color:#128C7E"><i class="fab fa-whatsapp"></i></div>
 <div class="menu-text"><span>Help &amp; Support</span><small>Contact us on WhatsApp</small></div>
@@ -284,6 +289,44 @@ body.profile-active .navbar{display:none}
 <h1 class="page-title"><i class="fas fa-ticket-alt"></i> My Bookings</h1>
 <div class="bookings-list" id="bookingsList"><div class="skeleton-card"><div class="skeleton skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w80"></div></div><div class="skeleton skeleton-price"></div></div><div class="skeleton-card"><div class="skeleton skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w80"></div></div><div class="skeleton skeleton-price"></div></div></div>
 <div class="no-bookings" id="noBookings" style="display:none"><i class="fas fa-ticket-alt"></i><h3>No Bookings Yet</h3><p>You haven't booked any tickets.</p><a href="#home" class="btn btn-primary"><i class="fas fa-bus"></i> Book Now</a></div>
+</div></div>
+</div>
+
+<!-- APPLICATION MANAGEMENT (ADMIN) -->
+<div class="page" id="page-admin">
+<div class="page-content"><div class="container">
+<a href="#profile" class="back-link"><i class="fas fa-arrow-left"></i> Profile</a>
+<div class="admin-unlock" id="adminUnlock">
+<div class="admin-unlock-card">
+<div class="admin-unlock-icon"><i class="fas fa-shield-alt"></i></div>
+<h1>Application Management</h1>
+<p>Enter admin passcode to open the dashboard</p>
+<form onsubmit="adminUnlock(event)">
+<div class="form-group"><label><i class="fas fa-lock"></i> Passcode</label><input type="password" id="adminPasscode" placeholder="Enter passcode" autocomplete="current-password" required></div>
+<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-unlock"></i> Unlock Dashboard</button>
+</form>
+<p class="admin-hint">Default passcode: <strong>admin123</strong> — change it in Settings</p>
+</div>
+</div>
+<div class="admin-dashboard" id="adminDashboard" style="display:none">
+<div class="admin-top">
+<div>
+<h1 class="page-title admin-title"><i class="fas fa-sliders-h"></i> Application Management</h1>
+<p class="admin-sub">Somaliland Express operations</p>
+</div>
+<button type="button" class="btn btn-outline admin-lock-btn" onclick="adminLock()"><i class="fas fa-lock"></i> Lock</button>
+</div>
+<div class="admin-tabs" role="tablist">
+<button type="button" class="admin-tab active" data-tab="overview" onclick="adminTab('overview')"><i class="fas fa-chart-pie"></i> Overview</button>
+<button type="button" class="admin-tab" data-tab="bookings" onclick="adminTab('bookings')"><i class="fas fa-list"></i> Bookings</button>
+<button type="button" class="admin-tab" data-tab="fleet" onclick="adminTab('fleet')"><i class="fas fa-bus"></i> Fleet</button>
+<button type="button" class="admin-tab" data-tab="settings" onclick="adminTab('settings')"><i class="fas fa-cog"></i> Settings</button>
+</div>
+<div class="admin-panel" id="adminPanelOverview"></div>
+<div class="admin-panel" id="adminPanelBookings" style="display:none"></div>
+<div class="admin-panel" id="adminPanelFleet" style="display:none"></div>
+<div class="admin-panel" id="adminPanelSettings" style="display:none"></div>
+</div>
 </div></div>
 </div>
 
@@ -523,6 +566,7 @@ function router(){
   else if(page==='confirmation')loadConfirmation();
   else if(page==='profile')loadProfile();
   else if(page==='bookings')loadMyBookings();
+  else if(page==='admin')loadAdmin();
   else if(page==='taxi-confirm')loadTaxiConfirmation();
   else if(page==='delivery-confirm')loadDeliveryConfirmation();
   else if(page==='verify')loadVerify();
