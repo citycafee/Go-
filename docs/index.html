@@ -133,21 +133,21 @@ body.profile-active .navbar{display:none}
 </div></div></div>
 </div>
 
-<!-- PROFILE -->
+<!-- PROFILE — Hayaan Bus Transport App -->
 <div class="page" id="page-profile">
-<div class="mobile-profile">
+<div class="mobile-profile hayain-profile">
 <!-- App Header -->
-<div class="app-header">
+<div class="app-header hayain-header">
 <div class="app-header-bg"></div>
 <div class="app-header-content">
 <div class="app-header-top">
-<span class="app-header-title"><i class="fas fa-bus"></i> Somaliland Express</span>
+<span class="app-header-title"><div class="brand-icon brand-icon-sm"><i class="fas fa-bus"></i></div> Hayaan Bus</span>
 <div class="app-header-actions">
-<button class="app-header-btn" title="Support" onclick="window.open('https://wa.me/252634251661','_blank')"><i class="fas fa-headset"></i></button>
+<button class="app-header-btn" title="Support" onclick="window.open('https://wa.me/252634251661','_blank')"><i class="fab fa-whatsapp"></i></button>
 <button class="app-header-btn" title="Log out" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
 </div>
 </div>
-<div class="profile-card-mobile">
+<div class="profile-card-mobile hayain-profile-card">
 <div class="profile-avatar-mobile" id="profileAvatar"><i class="fas fa-user"></i><div class="avatar-ring"></div></div>
 <h1 class="profile-name" id="profileName">Welcome</h1>
 <p class="profile-phone" id="profilePhone"><i class="fab fa-whatsapp"></i> -</p>
@@ -156,32 +156,39 @@ body.profile-active .navbar{display:none}
 </div>
 </div>
 
-<div class="profile-layout">
-<div class="profile-main">
-<!-- Stats Row -->
-<div class="stats-row-mobile" aria-label="Account stats">
-<div class="stat-item-mobile"><div class="stat-val" id="statBuses">0</div><div class="stat-lbl"><i class="fas fa-bus"></i> Bus</div></div>
-<div class="stat-item-mobile"><div class="stat-val" id="statTaxis">0</div><div class="stat-lbl"><i class="fas fa-taxi"></i> Taxi</div></div>
-<div class="stat-item-mobile"><div class="stat-val" id="statDeliveries">0</div><div class="stat-lbl"><i class="fas fa-motorcycle"></i> Delivery</div></div>
-<div class="stat-item-mobile"><div class="stat-val" id="statTotal">$0</div><div class="stat-lbl"><i class="fas fa-dollar-sign"></i> Spent</div></div>
+<!-- Wallet / membership card -->
+<div class="hayain-wallet" aria-label="Spending summary">
+<div class="hayain-wallet-inner">
+<div class="hayain-wallet-top">
+<span class="hayain-wallet-label"><i class="fas fa-wallet"></i> Total Spent</span>
+<strong class="hayain-wallet-total" id="statTotal">$0</strong>
+</div>
+<div class="hayain-wallet-stats">
+<div class="hayain-wallet-stat"><div class="stat-val" id="statBuses">0</div><div class="stat-lbl"><i class="fas fa-bus"></i> Bus</div></div>
+<div class="hayain-wallet-stat"><div class="stat-val" id="statTaxis">0</div><div class="stat-lbl"><i class="fas fa-taxi"></i> Taxi</div></div>
+<div class="hayain-wallet-stat"><div class="stat-val" id="statDeliveries">0</div><div class="stat-lbl"><i class="fas fa-motorcycle"></i> Delivery</div></div>
+</div>
+</div>
 </div>
 
-<!-- Services Grid -->
+<div class="profile-layout">
+<div class="profile-main">
+<!-- Quick actions -->
 <div class="services-section-mobile">
-<h3 class="section-label">Services</h3>
-<div class="services-grid-mobile">
-<a href="#home" onclick="openRouteModal();return false" class="service-item-mobile"><div class="service-bus"><i class="fas fa-bus"></i></div><span>Bus Booking</span></a>
-<a href="#taxi" class="service-item-mobile"><div class="service-taxi"><i class="fas fa-taxi"></i></div><span>Book Taxi</span></a>
+<h3 class="section-label">Book a Service</h3>
+<div class="services-grid-mobile hayain-services">
+<a href="#home" onclick="openRouteModal();return false" class="service-item-mobile"><div class="service-bus"><i class="fas fa-bus"></i></div><span>Bus Ticket</span></a>
+<a href="#taxi" class="service-item-mobile"><div class="service-taxi"><i class="fas fa-taxi"></i></div><span>Taxi Ride</span></a>
 <a href="#delivery" class="service-item-mobile"><div class="service-delivery"><i class="fas fa-motorcycle"></i></div><span>Delivery</span></a>
-<a href="#bookings" class="service-item-mobile"><div class="service-bookings"><i class="fas fa-ticket-alt"></i></div><span>My Bookings</span></a>
+<a href="#bookings" class="service-item-mobile"><div class="service-bookings"><i class="fas fa-ticket-alt"></i></div><span>My Tickets</span></a>
 </div>
 </div>
 
 <!-- Recent activity -->
 <div class="services-section-mobile">
-<h3 class="section-label">Recent Activity</h3>
-<div class="recent-activity" id="recentActivity">
-<div class="recent-empty"><i class="fas fa-history"></i><p>No trips yet — book your first ride</p><a href="#home" class="btn btn-primary btn-sm">Book Now</a></div>
+<h3 class="section-label">Recent Trips</h3>
+<div class="recent-activity hayain-recent" id="recentActivity">
+<div class="recent-empty"><i class="fas fa-route"></i><p>No trips yet — book your first ride</p><a href="#home" class="btn btn-primary btn-sm">Book Now</a></div>
 </div>
 </div>
 </div>
@@ -190,13 +197,13 @@ body.profile-active .navbar{display:none}
 <!-- Menu List -->
 <div class="menu-section-mobile">
 <h3 class="section-label">Account</h3>
-<div class="menu-list-mobile">
+<div class="menu-list-mobile hayain-menu">
 <a href="#bookings" class="menu-item-mobile"><div class="menu-icon" style="background:#E3F2FD;color:#1565C0"><i class="fas fa-ticket-alt"></i></div><div class="menu-text"><span>My Bookings</span><small>View all bus trips</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
 <a href="#taxi" class="menu-item-mobile"><div class="menu-icon" style="background:#FFF3E0;color:#E65100"><i class="fas fa-taxi"></i></div><div class="menu-text"><span>Book Taxi</span><small>Ride anywhere in city</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
 <a href="#delivery" class="menu-item-mobile"><div class="menu-icon" style="background:#E8F5E9;color:#2E7D32"><i class="fas fa-motorcycle"></i></div><div class="menu-text"><span>Send Delivery</span><small>Motorbike package delivery</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
-<a href="https://wa.me/252634251661" target="_blank" rel="noopener" class="menu-item-mobile"><div class="menu-icon" style="background:#E3F2FD;color:#1565C0"><i class="fas fa-headset"></i></div><div class="menu-text"><span>Help &amp; Support</span><small>Contact us on WhatsApp</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+<a href="https://wa.me/252634251661" target="_blank" rel="noopener" class="menu-item-mobile"><div class="menu-icon" style="background:#E8F5E9;color:#25D366"><i class="fab fa-whatsapp"></i></div><div class="menu-text"><span>Help &amp; Support</span><small>Chat on WhatsApp</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
 <button type="button" class="menu-item-mobile menu-item-btn" onclick="openEditProfile()"><div class="menu-icon" style="background:#F3E5F5;color:#6A1B9A"><i class="fas fa-user-edit"></i></div><div class="menu-text"><span>Edit Profile</span><small>Update name or WhatsApp</small></div><i class="fas fa-chevron-right menu-arrow"></i></button>
-<div class="menu-item-mobile"><div class="menu-icon" style="background:#ECEFF1;color:#546E7A"><i class="fas fa-info-circle"></i></div><div class="menu-text"><span>About</span><small>Somaliland Express v1.0</small></div><i class="fas fa-chevron-right menu-arrow"></i></div>
+<div class="menu-item-mobile"><div class="menu-icon" style="background:#ECEFF1;color:#546E7A"><i class="fas fa-info-circle"></i></div><div class="menu-text"><span>About</span><small>Hayaan Bus Transport v1.0</small></div><i class="fas fa-chevron-right menu-arrow"></i></div>
 <button type="button" class="menu-item-mobile menu-item-btn menu-item-danger" onclick="doLogout()"><div class="menu-icon" style="background:#FFEBEE;color:#C62828"><i class="fas fa-sign-out-alt"></i></div><div class="menu-text"><span>Log Out</span><small>Sign out of this device</small></div><i class="fas fa-chevron-right menu-arrow"></i></button>
 </div>
 </div>
@@ -454,8 +461,16 @@ function router(){
   showPage(page);checkLogin();
   if(page==='home')loadCities();
   else if(page==='buses')loadBuses();
-  else if(page==='seats'){bookingState.selectedSeats=[];loadSeats()}
-  else if(page==='payment')loadPaymentPage();
+  else if(page==='seats'){
+    if(bookingState.bus&&bookingState.origin){go('buses?origin='+encodeURIComponent(bookingState.origin)+'&dest='+encodeURIComponent(bookingState.destination)+'&date='+bookingState.date)}
+    else{go('home')}
+  }
+  else if(page==='payment'){
+    if(bookingState.bus&&bookingState.selectedSeats&&bookingState.selectedSeats.length){
+      if(bookingState.origin){go('buses?origin='+encodeURIComponent(bookingState.origin)+'&dest='+encodeURIComponent(bookingState.destination)+'&date='+bookingState.date);setTimeout(function(){if(bookingState.bus)selectBus(bookingState.bus_id)},80)}
+      else{go('home')}
+    }else{go('home')}
+  }
   else if(page==='confirmation')loadConfirmation();
   else if(page==='profile')loadProfile();
   else if(page==='bookings')loadMyBookings();
