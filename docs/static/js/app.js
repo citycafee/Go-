@@ -31,7 +31,8 @@ function doLogin(e){
   setUser({id:1,full_name:name,whatsapp:whatsapp});
   closeLoginModal();checkLogin();
   var redirect=localStorage.getItem('se_login_redirect');
-  if(redirect){localStorage.removeItem('se_login_redirect');go(redirect)}else{go('profile')}
+  localStorage.removeItem('se_login_redirect');
+  if(redirect)go(redirect);else go('profile');
 }
 function doLogout(){localStorage.removeItem('se_user');checkLogin();go('home')}
 function swapCities(){var o=document.getElementById('originCity'),d=document.getElementById('destCity');var t=o.value;o.value=d.value;d.value=t}
@@ -41,7 +42,9 @@ function loadCities(){
   var cities=[];DB_ROUTES.forEach(function(r){if(cities.indexOf(r.origin)===-1)cities.push(r.origin);if(cities.indexOf(r.destination)===-1)cities.push(r.destination)});
   cities.sort();
   var os=document.getElementById('originCity'),ds=document.getElementById('destCity');
-  cities.forEach(function(c){os.innerHTML+='<option value="'+c+'">'+c+'</option>';ds.innerHTML+='<option value="'+c+'">'+c+'</option>'});
+  var osDefault='<option value="">Select city</option>',dsDefault='<option value="">Select city</option>';
+  cities.forEach(function(c){osDefault+='<option value="'+c+'">'+c+'</option>';dsDefault+='<option value="'+c+'">'+c+'</option>'});
+  os.innerHTML=osDefault;ds.innerHTML=dsDefault;
   var today=new Date().toISOString().split('T')[0];
   document.getElementById('travelDate').value=today;
   document.getElementById('travelDate').min=today;
@@ -52,9 +55,25 @@ function searchBuses(e){
   var o=document.getElementById('originCity').value,d=document.getElementById('destCity').value,t=document.getElementById('travelDate').value;
   if(!o||!d)return alert('Select cities');
   if(o===d)return alert('Different cities needed');
-  go('buses?origin='+encodeURIComponent(o)+'&dest='+encodeURIComponent(d)+'&date='+t);
+  var target='buses?origin='+encodeURIComponent(o)+'&dest='+encodeURIComponent(d)+'&date='+t;
+  if(!getUser()){localStorage.setItem('se_login_redirect',target);openLoginModal();return}
+  go(target);
 }
 
+var busSearchTimer=null;
+function showFindingRoutes(origin,dest){
+  var finding=document.getElementById('findingRoutes'),busList=document.getElementById('busList'),noBuses=document.getElementById('noBuses');
+  if(!finding)return;
+  document.getElementById('findingTitle').textContent='Finding buses for '+origin+' \u2192 '+dest;
+  document.getElementById('findingSub').textContent='Checking schedules and available seats...';
+  finding.style.display='flex';
+  busList.style.display='none';
+  noBuses.style.display='none';
+}
+function hideFindingRoutes(){
+  var finding=document.getElementById('findingRoutes');
+  if(finding)finding.style.display='none';
+}
 
 function loadBuses(){
   var origin=getParam('origin'),dest=getParam('dest'),date=getParam('date')||new Date().toISOString().split('T')[0];
@@ -62,18 +81,23 @@ function loadBuses(){
   bookingState.origin=origin;bookingState.destination=dest;bookingState.date=date;
   document.getElementById('routeLabel').textContent=origin+' \u2192 '+dest;
   document.getElementById('dateLabel').textContent=formatDate(date);
-  var r=DB_ROUTES.find(function(r){return r.origin===origin&&r.destination===dest});
-  var routeBuses=r?DB_BUSES.filter(function(b){return b.route_id===r.id}):[];
-  var busList=document.getElementById('busList'),noBuses=document.getElementById('noBuses');
-  var allBookings=getBookings();
-  if(!routeBuses.length){busList.style.display='none';noBuses.style.display='block';return}
-  busList.style.display='flex';noBuses.style.display='none';
-  busList.innerHTML=routeBuses.map(function(b){
-    var booked=allBookings.filter(function(x){return x.bus_id===b.id&&x.date===date&&x.status==='confirmed'});
-    var bookedCount=0;booked.forEach(function(x){bookedCount+=x.seats.split(',').length});
-    var avail=b.total_seats-bookedCount;
-    return '<div class="bus-card" onclick="selectBus('+b.id+')"><div class="bus-card-image"><div class="bus-icon"><i class="fas fa-bus"></i></div></div><div class="bus-details"><div class="bus-number-top">'+b.bus_number+'</div><div class="bus-time-row"><span class="bus-time-depart">'+b.departure_time+' Depart</span><span class="bus-time-line">---</span><span class="bus-time-arrive">'+b.arrival_time+' Arrive</span><span class="bus-time-duration">'+b.duration_min+' min</span></div><div class="bus-seats-info"><span class="booked-seats">'+bookedCount+' booked</span><span class="available-seats">'+avail+' seats available</span></div></div><div class="bus-fare"><div class="price">$'+b.fare+'</div><div class="per-seat">per seat</div></div></div>';
-  }).join('');
+  showFindingRoutes(origin,dest);
+  if(busSearchTimer)clearTimeout(busSearchTimer);
+  busSearchTimer=setTimeout(function(){
+    hideFindingRoutes();
+    var r=DB_ROUTES.find(function(r){return r.origin===origin&&r.destination===dest});
+    var routeBuses=r?DB_BUSES.filter(function(b){return b.route_id===r.id}):[];
+    var busList=document.getElementById('busList'),noBuses=document.getElementById('noBuses');
+    var allBookings=getBookings();
+    if(!routeBuses.length){busList.style.display='none';noBuses.style.display='block';return}
+    busList.style.display='flex';noBuses.style.display='none';
+    busList.innerHTML=routeBuses.map(function(b){
+      var booked=allBookings.filter(function(x){return x.bus_id===b.id&&x.date===date&&x.status==='confirmed'});
+      var bookedCount=0;booked.forEach(function(x){bookedCount+=x.seats.split(',').length});
+      var avail=b.total_seats-bookedCount;
+      return '<div class="bus-card" onclick="selectBus('+b.id+')"><div class="bus-card-image"><div class="bus-icon"><i class="fas fa-bus"></i></div></div><div class="bus-details"><div class="bus-number-top">'+b.bus_number+'</div><div class="bus-time-row"><span class="bus-time-depart">'+b.departure_time+' Depart</span><span class="bus-time-line">---</span><span class="bus-time-arrive">'+b.arrival_time+' Arrive</span><span class="bus-time-duration">'+b.duration_min+' min</span></div><div class="bus-seats-info"><span class="booked-seats">'+bookedCount+' booked</span><span class="available-seats">'+avail+' seats available</span></div></div><div class="bus-fare"><div class="price">$'+b.fare+'</div><div class="per-seat">per seat</div></div></div>';
+    }).join('');
+  },700);
 }
 
 function selectBus(busId){

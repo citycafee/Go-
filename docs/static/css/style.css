@@ -629,6 +629,39 @@ a, button { touch-action: manipulation; }
 .date-label { background: var(--accent); color: var(--primary-dark); padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
 
 /* ===== BUS LIST ===== */
+.finding-routes {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--primary);
+}
+.finding-routes > i {
+    font-size: 1.6rem;
+    color: var(--primary);
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.finding-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+.finding-text strong {
+    color: var(--dark);
+    font-size: 1rem;
+    font-weight: 700;
+}
+.finding-text span {
+    color: var(--gray);
+    font-size: 0.85rem;
+}
 .bus-list { display: flex; flex-direction: column; gap: 15px; }
 .bus-card {
     background: white;

@@ -65,6 +65,10 @@ body.profile-active .navbar{display:none}
 <div class="page-content"><div class="container">
 <a href="#home" class="back-link"><i class="fas fa-arrow-left"></i> Change Route</a>
 <div class="route-banner"><h2><i class="fas fa-route"></i> <span id="routeLabel">Loading...</span></h2><span class="date-label" id="dateLabel"></span></div>
+<div class="finding-routes" id="findingRoutes" style="display:none" aria-live="polite">
+<i class="fas fa-spinner fa-spin"></i>
+<div class="finding-text"><strong id="findingTitle">Finding buses...</strong><span id="findingSub">Searching selected route</span></div>
+</div>
 <div class="bus-list" id="busList"><div class="skeleton-card"><div class="skeleton skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div><div class="skeleton skeleton-price"></div></div><div class="skeleton-card"><div class="skeleton skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div><div class="skeleton skeleton-price"></div></div><div class="skeleton-card"><div class="skeleton skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div><div class="skeleton skeleton-price"></div></div></div>
 <div class="no-buses" id="noBuses" style="display:none"><i class="fas fa-bus-slash"></i><h3>No buses found</h3><p>No buses for this route.</p><a href="#home" class="btn btn-primary">Try Another Date</a></div>
 </div></div>
@@ -471,11 +475,11 @@ function requireLogin(callback){
   return true;
 }
 function router(){
-  var h=location.hash.replace('#','').split('?')[0]||'home';
-  var page=h.split('?')[0];
+  var full=location.hash.replace('#','')||'home';
+  var page=full.split('?')[0]||'home';
   var publicPages=['home','verify'];
   if(publicPages.indexOf(page)===-1&&!getUser()){
-    localStorage.setItem('se_login_redirect',h);openLoginModal();showPage('home');loadCities();return;
+    localStorage.setItem('se_login_redirect',full);openLoginModal();showPage('home');loadCities();return;
   }
   showPage(page);checkLogin();
   if(page==='home')loadCities();
