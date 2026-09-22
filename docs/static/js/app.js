@@ -199,7 +199,13 @@ function confirmBooking(){
 
 function loadConfirmation(){
   var b=JSON.parse(localStorage.getItem('se_last_booking')||'null');
-  var u=getUser();if(!b)return go('home');
+  if(!b)return go('home');
+  fillTicketPopup(b);
+  openTicketPopup();
+}
+
+function fillTicketPopup(b){
+  var u=getUser();
   document.getElementById('ticketId').textContent=b.id;
   document.getElementById('ticketFrom').textContent=b.origin;
   document.getElementById('ticketTo').textContent=b.destination;
@@ -207,12 +213,11 @@ function loadConfirmation(){
   document.getElementById('ticketDepart').textContent=b.departure;
   document.getElementById('ticketArrive').textContent=b.arrival;
   document.getElementById('ticketSeats').textContent=b.seats;
-  document.getElementById('ticketPassenger').textContent=u?u.full_name:'Guest';
+  document.getElementById('ticketPassenger').textContent=b.name||(u?u.full_name:'Guest');
   document.getElementById('ticketPayment').textContent=(b.payment||'').toUpperCase();
   document.getElementById('ticketTotal').textContent='$'+b.fare;
   document.getElementById('qrBookingId').textContent=b.id;
-  generateQR('qrcode-img','SOMALAND EXPRESS\nBooking: #'+b.id+'\nRoute: '+b.origin+' to '+b.destination+'\nDate: '+b.date+'\nDepart: '+b.departure+'\nSeats: '+b.seats+'\nPassenger: '+(u?u.full_name:'Guest')+'\nPayment: '+(b.payment||'').toUpperCase()+'\nTotal: $'+b.fare,'#1A237E');
-  openTicketPopup();
+  generateQR('qrcode-img','SOMALAND EXPRESS\nBooking: #'+b.id+'\nRoute: '+b.origin+' to '+b.destination+'\nDate: '+b.date+'\nDepart: '+b.departure+'\nSeats: '+b.seats+'\nPassenger: '+(b.name||(u?u.full_name:'Guest'))+'\nPayment: '+(b.payment||'').toUpperCase()+'\nTotal: $'+b.fare,'#1A237E');
 }
 
 function openTicketPopup(){
@@ -226,6 +231,13 @@ function closeTicketPopup(){
   if(!el)return;
   el.classList.remove('active');
   document.body.style.overflow='';
+}
+
+function openBookingTicket(bookingId){
+  var b=getBookings().find(function(x){return x.id===bookingId});
+  if(!b)return;
+  fillTicketPopup(b);
+  openTicketPopup();
 }
 
 
@@ -367,7 +379,7 @@ function loadMyBookings(){
   if(!all.length){list.style.display='none';no.style.display='block';return}
   list.style.display='flex';no.style.display='none';
   list.innerHTML=all.map(function(b){
-    return '<div class="booking-card-item"><div class="booking-card-icon"><i class="fas fa-bus"></i></div><div class="booking-card-details"><div class="booking-card-route">'+b.origin+' to '+b.destination+'</div><div class="booking-card-info"><span><i class="fas fa-calendar"></i> '+formatDate(b.date)+'</span><span><i class="fas fa-clock"></i> '+b.departure+'</span><span><i class="fas fa-chair"></i> Seats: '+b.seats+'</span></div></div><span class="booking-card-status '+b.status+'">'+b.status+'</span><div class="booking-card-fare"><div class="amount">$'+b.fare+'</div><div class="method">'+b.payment+'</div></div></div>';
+    return '<div class="booking-card-item booking-card-clickable" role="button" tabindex="0" onclick="openBookingTicket('+b.id+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openBookingTicket('+b.id+')}" title="View ticket"><div class="booking-card-icon"><i class="fas fa-bus"></i></div><div class="booking-card-details"><div class="booking-card-route">'+b.origin+' to '+b.destination+'</div><div class="booking-card-info"><span><i class="fas fa-calendar"></i> '+formatDate(b.date)+'</span><span><i class="fas fa-clock"></i> '+b.departure+'</span><span><i class="fas fa-chair"></i> Seats: '+b.seats+'</span></div></div><span class="booking-card-status '+b.status+'">'+b.status+'</span><div class="booking-card-fare"><div class="amount">$'+b.fare+'</div><div class="method">'+(b.payment||'')+'</div></div><div class="booking-card-view"><i class="fas fa-qrcode"></i><span>View Ticket</span></div></div>';
   }).join('');
 }
 
