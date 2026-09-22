@@ -1742,6 +1742,65 @@ a, button { touch-action: manipulation; }
 .menu-text small { display: block; color: var(--gray); font-size: 0.75rem; margin-top: 2px; }
 .menu-arrow { color: #CCC; font-size: 0.8rem; }
 
+/* Account menu redesign */
+.account-section {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+.account-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 18px 0;
+}
+.account-section-header .section-label {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+.account-logout {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid #FDECEC;
+    background: #FFF5F5;
+    color: #C62828;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.account-logout:hover { background: #FFEBEE; }
+.account-menu {
+    margin-top: 12px;
+    box-shadow: none;
+    border-radius: 0;
+    background: transparent;
+}
+.account-menu .menu-item-mobile {
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: none;
+}
+.account-menu .menu-item-mobile:hover { background: #F7FAFC; }
+.account-menu .menu-item-static { cursor: default; }
+.account-menu .menu-item-static:hover { background: transparent; }
+.account-menu-divider {
+    height: 1px;
+    margin: 6px 18px;
+    background: linear-gradient(90deg, #EEF2F7, #E4E9F0, #EEF2F7);
+}
+.account-menu .menu-icon {
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+}
+.account-menu .menu-text span { font-weight: 650; letter-spacing: -0.01em; }
+.account-menu .menu-text small { color: #7A869A; }
+
 /* Recent activity */
 .recent-activity {
     background: white;
@@ -1847,6 +1906,10 @@ a, button { touch-action: manipulation; }
     .menu-item-mobile { padding: 18px 20px; }
     .menu-text span { font-size: 0.95rem; }
     .section-label { font-size: 0.88rem; margin-bottom: 14px; }
+    .account-section-header { padding: 20px 22px 0; }
+    .account-section-header .section-label { font-size: 1rem; margin-bottom: 0; }
+    .account-menu .menu-item-mobile { padding: 16px 22px; }
+    .account-menu-divider { margin: 8px 22px; }
     .recent-item { padding: 16px 18px; }
 }
 
@@ -2083,6 +2146,10 @@ a, button { touch-action: manipulation; }
     .menu-icon { width: 38px; height: 38px; font-size: 0.9rem; }
     .menu-text span { font-size: 0.85rem; }
     .menu-text small { font-size: 0.7rem; }
+    .account-section-header { padding: 16px 14px 0; }
+    .account-menu .menu-item-mobile { padding: 13px 14px; }
+    .account-menu-divider { margin: 4px 14px; }
+    .account-logout { width: 32px; height: 32px; border-radius: 9px; font-size: 0.85rem; }
     .bottom-nav { padding: 6px 0; }
     .bottom-nav-item { font-size: 0.6rem; padding: 3px 10px; }
     .bottom-nav-item i { font-size: 1rem; }

@@ -187,17 +187,43 @@ body.profile-active .navbar{display:none}
 </div>
 
 <div class="profile-side">
-<!-- Menu List -->
-<div class="menu-section-mobile">
+<!-- Account Menu -->
+<div class="menu-section-mobile account-section">
+<div class="account-section-header">
 <h3 class="section-label">Account</h3>
-<div class="menu-list-mobile">
-<a href="#bookings" class="menu-item-mobile"><div class="menu-icon" style="background:#E3F2FD;color:#1565C0"><i class="fas fa-ticket-alt"></i></div><div class="menu-text"><span>My Bookings</span><small>View all bus trips</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
-<a href="#taxi" class="menu-item-mobile"><div class="menu-icon" style="background:#FFF3E0;color:#E65100"><i class="fas fa-taxi"></i></div><div class="menu-text"><span>Book Taxi</span><small>Ride anywhere in city</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
-<a href="#delivery" class="menu-item-mobile"><div class="menu-icon" style="background:#E8F5E9;color:#2E7D32"><i class="fas fa-motorcycle"></i></div><div class="menu-text"><span>Send Delivery</span><small>Motorbike package delivery</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
-<a href="https://wa.me/252634251661" target="_blank" rel="noopener" class="menu-item-mobile"><div class="menu-icon" style="background:#E3F2FD;color:#1565C0"><i class="fas fa-headset"></i></div><div class="menu-text"><span>Help &amp; Support</span><small>Contact us on WhatsApp</small></div><i class="fas fa-chevron-right menu-arrow"></i></a>
-<button type="button" class="menu-item-mobile menu-item-btn" onclick="openEditProfile()"><div class="menu-icon" style="background:#F3E5F5;color:#6A1B9A"><i class="fas fa-user-edit"></i></div><div class="menu-text"><span>Edit Profile</span><small>Update name or WhatsApp</small></div><i class="fas fa-chevron-right menu-arrow"></i></button>
-<div class="menu-item-mobile"><div class="menu-icon" style="background:#ECEFF1;color:#546E7A"><i class="fas fa-info-circle"></i></div><div class="menu-text"><span>About</span><small>Somaliland Express v1.0</small></div><i class="fas fa-chevron-right menu-arrow"></i></div>
-<button type="button" class="menu-item-mobile menu-item-btn menu-item-danger" onclick="doLogout()"><div class="menu-icon" style="background:#FFEBEE;color:#C62828"><i class="fas fa-sign-out-alt"></i></div><div class="menu-text"><span>Log Out</span><small>Sign out of this device</small></div><i class="fas fa-chevron-right menu-arrow"></i></button>
+<button type="button" class="account-logout" onclick="doLogout()" title="Log out"><i class="fas fa-sign-out-alt"></i></button>
+</div>
+<div class="menu-list-mobile account-menu">
+<a href="#bookings" class="menu-item-mobile">
+<div class="menu-icon" style="background:#E3F2FD;color:#1565C0"><i class="fas fa-ticket-alt"></i></div>
+<div class="menu-text"><span>My Bookings</span><small>View all bus trips</small></div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="#taxi" class="menu-item-mobile">
+<div class="menu-icon" style="background:#FFF3E0;color:#E65100"><i class="fas fa-taxi"></i></div>
+<div class="menu-text"><span>Book Taxi</span><small>Ride anywhere in city</small></div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="#delivery" class="menu-item-mobile">
+<div class="menu-icon" style="background:#E8F5E9;color:#2E7D32"><i class="fas fa-motorcycle"></i></div>
+<div class="menu-text"><span>Send Delivery</span><small>Motorbike package delivery</small></div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<div class="account-menu-divider" role="separator"></div>
+<a href="https://wa.me/252634251661" target="_blank" rel="noopener" class="menu-item-mobile">
+<div class="menu-icon" style="background:#E7F8EF;color:#128C7E"><i class="fab fa-whatsapp"></i></div>
+<div class="menu-text"><span>Help &amp; Support</span><small>Contact us on WhatsApp</small></div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<button type="button" class="menu-item-mobile menu-item-btn" onclick="openEditProfile()">
+<div class="menu-icon" style="background:#F3E5F5;color:#6A1B9A"><i class="fas fa-user-edit"></i></div>
+<div class="menu-text"><span>Edit Profile</span><small>Update name or WhatsApp</small></div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</button>
+<div class="menu-item-mobile menu-item-static">
+<div class="menu-icon" style="background:#ECEFF1;color:#546E7A"><i class="fas fa-info-circle"></i></div>
+<div class="menu-text"><span>About</span><small>Somaliland Express v1.0</small></div>
+</div>
 </div>
 </div>
 </div>
